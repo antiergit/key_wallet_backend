@@ -1,0 +1,20 @@
+export interface MakerTrnxRequestInterface {
+    id: number,
+    maker_user_id: number | null,
+    type: string | null,
+    user_id: number | null,
+    coin_id: number | null,
+    from_address: string | null,
+    to_address: string | null,
+    crypto_amount: string | null,
+    wallet_name: string | null,
+    trnx_fee: number | null,
+    status: string | null,
+    token_one_amount: string | null,
+    token_one: string | null,
+    token_second: string | null,
+    saved_slippage: number | null,
+    gasless_toggle: boolean | null,
+    created_at: Date,
+    updated_at: Date
+}

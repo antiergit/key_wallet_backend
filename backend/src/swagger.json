@@ -1,0 +1,689 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "",
+    "version": "1.0.0",
+    "title": "Novatide Backend",
+    "termsOfService": "",
+    "contact": {
+      "email": "antier.solution@antiersolution.com"
+    }
+  },
+  "host": "localhost:4000",
+  "basePath": "/api/v1",
+  "tags": [
+    {
+      "name": "Wallets"
+    }
+  ],
+  "paths": {
+    "/user/create/wallet": {
+      "post": {
+        "tags": ["Wallets"],
+        "summary": "Create user wallets (Decentralized)",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "wallets",
+            "description": "Array of objects containing wallets information that need to be added to the database.",
+            "required": true,
+            "schema": {
+              "properties": {
+                "wallets": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "coinId": {
+                        "type": "integer"
+                      },
+                      "wallet_address": {
+                        "type": "string"
+                      },
+                      "coinSymbol": {
+                        "type": "string"
+                      },
+                      "device_token": {
+                        "type": "string"
+                      },
+                      "deviceType": {
+                        "type": "number"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Wallets created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/erc20Tokens/fetchToken": {
+      "get": {
+        "tags": ["ERC20 Tokens"],
+        "summary": "Search ERC20 Token",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Please enter the Bearer token here",
+            "required": true,
+            "schema": {
+              "properties": {
+                "Authorization": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          {
+            "in": "query",
+            "name": "tokenAddress",
+            "description": "Pass in the token address to search for token details",
+            "required": true
+          }
+        ],
+
+        "responses": {
+          "200": {
+            "description": "Wallets created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/erc20Tokens/addToken": {
+      "post": {
+        "tags": ["ERC20 Tokens"],
+        "summary": "Add ERC20 Token",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Please enter the Bearer token here",
+            "required": true,
+            "schema": {
+              "properties": {
+                "Authorization": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          {
+            "in": "body",
+            "name": "Token Address",
+            "description": "Pass in the token address to add to database",
+            "required": true,
+            "schema": {
+              "properties": {
+                "tokenAddress": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Wallets created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/erc20Tokens/createTokenWallet": {
+      "post": {
+        "tags": ["ERC20 Tokens"],
+        "summary": "Add ERC20 Token Wallet",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Please enter the Bearer token here",
+            "required": true,
+            "schema": {
+              "properties": {
+                "Authorization": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Pass in the details to create wallet with token",
+            "required": true,
+            "schema": {
+              "properties": {
+                "coinId": {
+                  "type": "number"
+                },
+                "walletAddress": {
+                  "type": "string"
+                },
+                "deviceToken": {
+                  "type": "string"
+                },
+                "deviceType": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Wallets created successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/coins/list": {
+      "get": {
+        "tags": ["Coins"],
+        "summary": "Get available coins list",
+        "responses": {
+          "200": {
+            "description": "Coins list fetched successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unable to create wallets.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tx/eth/withdrawals/broadcast": {
+      "post": {
+        "tags": ["Transactions Broadcast"],
+        "summary": "ETH transactions (Broadcast)",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Please enter the Bearer token here",
+            "required": true,
+            "schema": {
+              "properties": {
+                "Authorization": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "description": "Pass in the required data to broadcast the transaction to the ethereum blockchain",
+            "schema": {
+              "properties": {
+                "toAddress": {
+                  "type": "string"
+                },
+                "fromAddress": {
+                  "type": "string"
+                },
+                "gasPrice": {
+                  "type": "number"
+                },
+                "gasLimit": {
+                  "type": "number"
+                },
+                "amount": {
+                  "type": "number"
+                },
+                "txRaw": {
+                  "type": "string"
+                },
+                "reqType": {
+                  "type": "string"
+                },
+                "coinId": {
+                  "type": "number"
+                },
+                "coinFamily": {
+                  "type": "number"
+                },
+                "nonce": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Broadcast successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error while broadcasting",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tx/btc/withdrawals/broadcast": {
+      "post": {
+        "tags": ["Transactions Broadcast"],
+        "summary": "BTC transactions (Broadcast)",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Please enter the Bearer token here",
+            "required": true,
+            "schema": {
+              "properties": {
+                "Authorization": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": true,
+            "description": "Pass in the required data to broadcast the transaction to the btc blockchain",
+            "schema": {
+              "properties": {
+                "toAddress": {
+                  "type": "string"
+                },
+                "fromAddress": {
+                  "type": "string"
+                },
+                "gasPrice": {
+                  "type": "number"
+                },
+                "gasLimit": {
+                  "type": "number"
+                },
+                "amount": {
+                  "type": "number"
+                },
+                "txRaw": {
+                  "type": "string"
+                },
+                "reqType": {
+                  "type": "string"
+                },
+                "coinId": {
+                  "type": "number"
+                },
+                "coinFamily": {
+                  "type": "number"
+                },
+                "nonce": {
+                  "type": "number"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Broadcast successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error while broadcasting.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/history/tx": {
+      "get": {
+        "tags": ["History"],
+        "summary": "Transactions History",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Please enter the Bearer token here",
+            "required": true,
+            "schema": {
+              "properties": {
+                "Authorization": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          {
+            "in": "query",
+            "description": "complete or pending",
+            "name": "status",
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "description": "For ex: eth",
+            "name": "coinSymbol",
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "description": "From Data YYYY-MM-DD Format",
+            "name": "fromD",
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "description": "From Data YYYY-MM-DD Format",
+            "name": "toD",
+            "type": "string"
+          },
+          {
+            "in": "query",
+            "description": "withdraw or deposit",
+            "name": "txType",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transactions fetched successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error while fetching.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/history/notifications": {
+      "get": {
+        "tags": ["History"],
+        "summary": "Notification History",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "description": "Please enter the Bearer token here",
+            "required": true,
+            "schema": {
+              "properties": {
+                "Authorization": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transactions fetched successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error while fetching.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/fiat/update": {
+      "get": {
+        "tags": ["Fiat Currency"],
+        "summary": "Fiat price update for coins",
+        "responses": {
+          "200": {
+            "description": "Fiat currency prices updated successfully",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "array"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error while fetching.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "data": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,21 @@
+export enum SuccessMessages {
+  WALLET_CREATED = "Wallets created successfully.",
+  TOKEN_EXIST = "Token already exist.",
+  TOKEN_WALLET_CREATED = "Token Added successfully to wallet",
+  TOKEN_SWAP_CREATED = "Token added successfully for Swap",
+  TX_BROADCAST_SUCCESS = "Transaction successfully broadcasted to blockchain",
+  COINS_FETCHED = "Coins fetched successfully",
+  NEW_WALLET_CREATED = "New wallet created successfully.",
+  TRANSACTION_BROADCAST_SUCCESSFULLY = "Transaction broadcasted to blockchain successfully",
+  DEPOSIT_SUCCESSFULLY = 'Deposit executed successfully!',
+  WITHDRAW_STATUS_UPDATE= "Withdraw tx processed and tx status updated to {status}.",
+  USER_LOGOUT= "User logout successfully.",
+  MY_WALLET = "User wallet list fetched successfully.",
+  TX_EXIST = "Transaction already exists.",
+  DEPOSIT_WEBHOOK = "Deposit webhook executed successfully!",
+  GOOGLE_2FA_QR="QR generated successfully",
+  VERIFY_TOKEN="Token verified successfully",
+  DISABLE_GOOGLE_AUTH="Disable successfully",
+  APP_VERSION = "Get app version successfully",
+  UPDATE_APP_VERSION="Update app version successfully"
+}
