@@ -1,0 +1,11 @@
+export { default as gasPriceQueries } from './gasPrice';
+export { default as coinQueries } from "./coins";
+export { default as walletQueries } from "./wallets";
+export { default as currencyQueries } from './currencies';
+export { default as coinPriceInFiatQueries } from './coinPriceInFiat';
+export { default as makerWalletQueries } from './makerWallets';
+export { default as makerTrnxRequestQueries } from './makerTrnxRequests';
+export { default as trnxHistoryQueries } from './trnxHistory';
+export { default as changellyCrossChainCoinQueries } from './changellySupportedCrossChainCoins';
+export { default as notificationQueries } from './notifications';
+export { default as userQueries } from './users';
