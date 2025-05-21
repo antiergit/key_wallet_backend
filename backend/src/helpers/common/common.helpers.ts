@@ -3,6 +3,7 @@ import fs from "fs";
 import { config } from "../../config";
 import * as Models from '../../models/model/index';
 import dbHelper, { catch_err_msg_queries } from "../dbHelper/index";
+import axios from 'axios';
 class CommonHelper {
   constructor() { }
 
@@ -76,6 +77,27 @@ class CommonHelper {
       throw new Error(err)
     }
   }
+
+  public addressValidateChainalysis = async (wallet_address: string) => {
+    try {
+      const headers = {
+        'X-API-Key': config.CHAINALYSIS_TOKEN,
+        'Accept': 'application/json'
+      }
+
+      const response = await axios.get(`https://public.chainalysis.com/api/v1/address/${wallet_address}`, {
+        headers: headers
+      });
+
+      return { url: response.config?.url, response: response.data }
+    } catch (error) {
+      console.log("🚀 ~ CommonHelper ~ addressValidateChainalysis= ~ error:", error)
+      return {
+        status: false,
+        message: (error as Error).message
+      }
+    }
+}
 
 }
 

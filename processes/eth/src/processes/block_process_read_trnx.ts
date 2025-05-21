@@ -112,6 +112,12 @@ class Eth_block_process {
                 }
             } else {
                 console.log("No blockinfo")
+                // await EthOldBLockModel.create({
+                //     start_block: blockId,
+                //     end_block: blockId,
+                //     coin_family: config.COIN_FAMILY_ETH,
+                //     status: 0
+                // })
             }
         } catch (err: any) {
             console.error("Error in getTxFromBlock:", (err as Error).message);
@@ -141,8 +147,8 @@ class Eth_block_process {
                     }
                     let dataaaaa_exist: any = await ethProcessHelper.setKeyValuePair(config.BLOCKS, config.READ_BEHINED_BLOCK_ETH, JSON.stringify(add_data))
                 } else {
-                    console.log("id>>>>>>>>>>>", id)
-                    await EthOldBLockModel.destroy({ where: { id: id } })
+                    //console.log("id>>>>>>>>>>>", id)
+                    await EthOldBLockModel.update({ status:1 }, { where: { id: id } })
                     await ethProcessHelper.deleteKeyValuePair(config.BLOCKS, config.READ_BEHINED_BLOCK_ETH)
 
                     let behindBlocks: any = await ethProcessHelper.behindBlocks()

@@ -29,6 +29,10 @@ let dataObj = {
     coin_family: {
         type: DataTypes.INTEGER,
         allowNull: false,
+    },
+    status: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
     }
 };
 let dataObjIndex = {

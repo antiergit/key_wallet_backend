@@ -23,6 +23,7 @@ class ThirdPartyHelper {
     public async getBNBGas() {
         try {
             let url: string = `${config.BNB.GAS_FEE_URL}${config.BNB.GAS_FEE_API_KEY}`;
+            console.log("------------url -------------",url)
             let resp: any = await axios.get(url)
             if (resp.status == 200) {
                 return { status: true, response: resp.data };

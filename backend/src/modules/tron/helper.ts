@@ -239,21 +239,67 @@ class TronHelper {
         }
     }
 
-    async getUserTrxBalance(wallet: string): Promise<string> {
-        try {
-            return new Promise((resolve) => {
-                this.tronWeb.trx.getBalance(wallet).then(async (result: any) => {
-                    let balance = await this.tronWeb.fromSun(result);
-                    console.log("UserTrxBalance:", balance);
-                    resolve(balance);
-                });
-            });
-        } catch (error) {
-            console.log("getUserTrxBalance error: ", error);
-            return '00'
-        }
+    // async getUserTrxBalance(wallet: string): Promise<string> {
+    //     try {
+    //         return new Promise((resolve) => {
+    //             this.tronWeb.trx.getBalance(wallet).then(async (result: any) => {
+    //                 let balance = await this.tronWeb.fromSun(result);
+    //                 console.log("UserTrxBalance:", balance);
+    //                 resolve(balance);
+    //             });
+    //         });
+    //     } catch (error) {
+    //         console.log("getUserTrxBalance error: ", error);
+    //         return '00'
+    //     }
 
-    }
+    // }
+
+
+    async getUserTrxBalance(address: string): Promise<number | boolean> {
+        try {
+          let data = JSON.stringify({
+            address: address,
+            visible: true,
+          });
+    
+          let configObj: any = {
+            method: "post",
+            url: this.TRX_FULLNODE + "wallet/getaccount",
+            // url: config.TRX_FULLNODE + '/wallet/getaccount',
+            // headers: {},
+    
+            headers: {
+              "Content-Type": "application/json",
+              apikey:  config.NODE.TRX_API_KEY,
+            },
+            data: data,
+          };
+    
+          let balance = await axios(configObj)
+            .then(function (response: any) {
+              if (response.data?.balance) {
+                return response.data.balance;
+              } else {
+                return 0;
+              }
+            })
+            .catch(function (error: any) {
+              console.log("::Error log:: axios catch Coin_Fetch_Balance >", error);
+              return false;
+            });
+    
+          if (balance > 0) {
+            balance = balance / 1000000;
+          }
+    
+          console.log("----tron balance----",balance)
+          return balance;
+        } catch (error) {
+          console.log("::Error log:: Coin_Fetch_Balance :", error);
+          return false;
+        }
+      }
 
 
     public async fetchAccountInfo(fromAddress: string, toAddress: string) {

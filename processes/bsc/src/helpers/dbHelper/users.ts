@@ -36,6 +36,8 @@ class UserQueries {
             let data: any = await this.userModel.findAll({
                 attributes: attr1,
                 where: where1,
+                logging: console.log,
+                group: ['user_maker_wallet_data.device_token'],
                 include: [{
                     model: DeviceTokenModel,
                     attributes: attr2,

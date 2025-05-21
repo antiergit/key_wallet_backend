@@ -1,4 +1,5 @@
 import TronWeb from 'tronweb';
+import axios from 'axios';
 import Web3 from "web3"
 import { BooleanEnum, TokenStandard } from "../enum";
 import { Utility_Helper } from "./utility.helper";
@@ -45,7 +46,7 @@ class BlockchainHelper {
             status: any;
             data: { ret: [{ contractRet: any }] };
          } = await this.tronWeb.trx.getConfirmedTransaction(tx_hash).then((result: {}) => {
-            console.log("Inside tx_hash>>>", tx_hash)
+            // console.log("Inside tx_hash>>>", tx_hash)
             return { status: true, data: result };
          }).catch(async (err: any) => {
             console.error("Error in getConfirmedTransaction catch:", err?.message);
@@ -147,17 +148,64 @@ class BlockchainHelper {
       }
    }
    /** fetch native coin balance */
-   public async TRX_Coin_Fetch_Balance(address: string) {
+   // public async TRX_Coin_Fetch_Balance(address: string) {
+   //    try {
+   //       return await this.tronWeb.trx.getBalance(address).then(async (result: any) => {
+   //          let coinBalance: any = await this.tronWeb.fromSun(result);
+   //          return Number(coinBalance);
+   //       });
+   //    } catch (err: any) {
+   //       console.error(`error in Tron_Helper TRX_Fetch_Balance error >>`, err);
+   //       throw err;
+   //    }
+   // }
+
+   async TRX_Coin_Fetch_Balance(address: string): Promise<number | boolean> {
       try {
-         return await this.tronWeb.trx.getBalance(address).then(async (result: any) => {
-            let coinBalance: any = await this.tronWeb.fromSun(result);
-            return Number(coinBalance);
-         });
-      } catch (err: any) {
-         console.error(`error in Tron_Helper TRX_Fetch_Balance error >>`, err);
-         throw err;
+        let data = JSON.stringify({
+          address: address,
+          visible: true,
+        });
+  
+        let configObj: any = {
+          method: "post",
+          url: this.TRX_FULLNODE + "wallet/getaccount",
+          // url: config.TRX_FULLNODE + '/wallet/getaccount',
+          // headers: {},
+  
+          headers: {
+            "Content-Type": "application/json",
+            apikey:  config.NODE.TRX_API_KEY,
+          },
+          data: data,
+        };
+  
+        let balance = await axios(configObj)
+          .then(function (response: any) {
+            if (response.data?.balance) {
+              return response.data.balance;
+            } else {
+              return 0;
+            }
+          })
+          .catch(function (error: any) {
+            console.log("::Error log:: axios catch Coin_Fetch_Balance >", error);
+            return false;
+          });
+  
+        if (balance > 0) {
+          balance = balance / 1000000;
+        }
+  
+        return balance;
+      } catch (error) {
+        console.log("::Error log:: Coin_Fetch_Balance :", error);
+        return false;
       }
-   }
+    }
+
+
+
    public async GetTransactionInfo(tx_hash: string) {
       try {
          return await this.tronWeb.trx.getTransactionInfo(tx_hash).then(async (result: any) => {

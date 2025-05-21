@@ -33,8 +33,7 @@ class Global_helper {
     }
     public async Fetch_Balance(coin_data: any, wallet_address: string,) {
         let balance: any;
-        try {
-
+        try {     
             switch (coin_data.coin_family) {
                 case CoinFamily.BNB:
                     console.log("bnb bnb")
@@ -55,7 +54,10 @@ class Global_helper {
 
                 case CoinFamily.TRON:
                     console.log("trx trx")
+                    console.log("coindatafortroncheck::",coin_data);
                     balance = await Blockchain_Helper.TRX_Fetch_Balance(wallet_address, coin_data)
+                    console.log("balanceTroncheck:",balance);
+                    
                     break;
             }
             return { status: true, balance: balance };

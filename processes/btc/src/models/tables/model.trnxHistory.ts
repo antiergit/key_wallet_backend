@@ -128,6 +128,10 @@ let dataObj = {
         type: DataTypes.STRING(191),
         allowNull: true
     },
+    recipient_address :{
+        type: DataTypes.STRING,
+        allowNull: true
+    }
 };
 
 let dataObjIndex = {

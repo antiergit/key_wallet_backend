@@ -35,6 +35,7 @@ import ChangellyDetailsModel from './model.changelly_details';
 import ChangellyWebhooksModel from './model.changelly_webhooks';
 import ChangellyOnOffRampOrdersModel from './model.changelly_on_off_ramp_orders';
 import RocketxSupportedCoinsModel from './model.rocketx_supported_coins';
+import chainAnalErrorLogsModel from './model.chainanalerror';
 export {
     AddressBookModel,
     AddressBookWalletsModel,
@@ -72,6 +73,7 @@ export {
     ChangellyDetailsModel,
     ChangellyWebhooksModel,
     ChangellyOnOffRampOrdersModel,
-    RocketxSupportedCoinsModel
+    RocketxSupportedCoinsModel,
+    chainAnalErrorLogsModel
 
 }

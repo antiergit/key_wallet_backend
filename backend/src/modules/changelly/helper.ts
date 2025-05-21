@@ -277,6 +277,8 @@ class ChangellyHelper implements OnlyControllerInterface {
         }
     }
     public async getResponseData(payload: any, headers: any) {
+        console.log("🚀 ~ ChangellyHelper ~ getResponseData ~ headers:", headers)
+        console.log("🚀 ~ ChangellyHelper ~ getResponseData ~ payload:", payload)
         try {
             let responseFromChangelly: any = await axios.post(
                 `${config.CHANGELLY.CHANGELLY_CROSS_CHAIN_BASE_URL}`,
@@ -321,6 +323,7 @@ class ChangellyHelper implements OnlyControllerInterface {
             } else {
                 responseFromChangelly = await axios.post(path, data, { headers: headers })
             }
+            console.log("🚀 ~ ChangellyHelper ~ getResponseDataOfOnOffRamp ~ responseFromChangelly:", responseFromChangelly)
             return responseFromChangelly;
         } catch (err: any) {
             console.error("Error in getResponseDataOfOnOffRamp of changelly", err.message)

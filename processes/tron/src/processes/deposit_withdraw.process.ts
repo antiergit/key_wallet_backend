@@ -42,6 +42,7 @@ class TronDepositWithdrawProcess {
       txType: data.type,
       trnx_fee: data.trnx_fee
     };
+
     await tronDepositWithdrawProcess.SaveNewTrnx(webhookTx)
   };
   SaveNewTrnx = async (trnx_data: any) => {

@@ -60,6 +60,45 @@ class BTCController implements OnlyControllerInterface {
 
       let resultStatus: any = await dbHelper.saveWithdrawTxDetails(req, is_maker);
       if (resultStatus.status && resultStatus.status == true) {
+
+        // Add notification for pending transaction
+        let trnxTypeW: string = "Withdraw";
+        switch (req.body.tx_type) {
+          case 'DAPP':
+            trnxTypeW = "Smart Contract Execution";
+            break;
+          case 'Approve':
+            trnxTypeW = "Approval";
+            break;
+          case 'SWAP':
+            trnxTypeW = "Swap";
+            break;
+          case 'CROSS_CHAIN':
+            trnxTypeW = "Cross-chain Swap";
+            break;
+          default:
+            break;
+        }
+
+        const notiMsg = `${trnxTypeW} of ${req.body.amount} ${req.coininfo.coin_symbol.toUpperCase()} is pending.`;
+
+        let notifData: any = {
+          title: "WITHDRAW",
+          message: notiMsg,
+          amount: req.body.amount,
+          from_user_id: 0,
+          to_user_id: req.userId,
+          coin_symbol: req.coininfo.coin_symbol,
+          wallet_address: req.body.from,
+          tx_id: req.body.tx_hash,
+          coin_id: req.coininfo.coin_id,
+          tx_type: req.body.tx_type,
+          notification_type: "withdraw",
+
+        };
+
+        await global_helper.SendNotification(notifData);
+
         return response.success(res, {
           data: {
             message: language[lang].TRANSACTION_BROADCAST_SUCCESSFULLY,

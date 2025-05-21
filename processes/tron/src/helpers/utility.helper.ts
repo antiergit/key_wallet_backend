@@ -170,7 +170,8 @@ class UtilityHelper {
                tx_type: data.tx_type
             }
          });
-         if (checkOldNotif == 0) {
+         console.log("checkOldNotif -----",checkOldNotif)
+         if (checkOldNotif === 0) {
             let notificationModel: any = {
                message: data.message,
                from_user_id: data.from_user_id ? data.from_user_id : 0,

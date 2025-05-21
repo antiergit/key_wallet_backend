@@ -1,85 +1,95 @@
-import zookeeperConfig from "../connections/zookeeper.conn";
+import AwsSecretManagerConfig from "../connections/awsSecrets.config";
+// import AwsSecretManagerConfig from "../connections/zookeeper.conn";
 const name = "novatide";
+const parsedCoinGecko = JSON.parse(AwsSecretManagerConfig.config.COIN_GECKO);
 export const config = {
-  SERVER: zookeeperConfig.config.SERVER,
-  PORT: zookeeperConfig.config.PORT,
-  REDIS_CONN: zookeeperConfig.config.REDIS_CONN,
-  RABBIT_MQ_CONN: zookeeperConfig.config.RABBIT_MQ_CONN,
-  ADMIN_TOKEN: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.ADMIN_TOKEN}`,
-  GLOBAL_LIMIT_FOR_MATHCA: zookeeperConfig.config.GLOBAL_LIMIT_FOR_MATHCA,
-  ALL_COINS: zookeeperConfig.config.ALL_COINS,
+  SERVER: AwsSecretManagerConfig.config.SERVER,
+  PORT: AwsSecretManagerConfig.config.PORT,
+  REDIS_CONN: AwsSecretManagerConfig.config.REDIS_CONN,
+  RABBIT_MQ_CONN: AwsSecretManagerConfig.config.RABBIT_MQ_CONN,
+  ADMIN_TOKEN: `${name}_${AwsSecretManagerConfig.config.SERVER}_${AwsSecretManagerConfig.config.ADMIN_TOKEN}`,
+  GLOBAL_LIMIT_FOR_MATHCA:
+    AwsSecretManagerConfig.config.GLOBAL_LIMIT_FOR_MATHCA,
+  ALL_COINS: AwsSecretManagerConfig.config.ALL_COINS,
+  CHAINALYSIS_TOKEN: AwsSecretManagerConfig.config.CHAINALYSIS_TOKEN,
   DB: {
-    DB_USER: zookeeperConfig.config.DB_USER,
-    DB_PASSWORD: zookeeperConfig.config.DB_PASSWORD,
-    DB_NAME: zookeeperConfig.config.DB_NAME,
-    DB_HOST_WRITE: zookeeperConfig.config.DB_HOST_WRITE,
-    DB_HOST_READ: zookeeperConfig.config.DB_HOST_READ,
+    DB_USER: AwsSecretManagerConfig.config.DB_USER,
+    DB_PASSWORD: AwsSecretManagerConfig.config.DB_PASSWORD,
+    DB_NAME: AwsSecretManagerConfig.config.DB_NAME,
+    DB_HOST_WRITE: AwsSecretManagerConfig.config.DB_HOST_WRITE,
+    DB_HOST_READ: AwsSecretManagerConfig.config.DB_HOST_READ,
   },
 
   ON_CHAIN: {
-    ONEINCH_API_URL: zookeeperConfig.config.ONEINCH_API_URL,
-    ONEINCH_API_KEY: zookeeperConfig.config.ONEINCH_API_KEY,
+    ONEINCH_API_URL: AwsSecretManagerConfig.config.ONEINCH_API_URL,
+    ONEINCH_API_KEY: AwsSecretManagerConfig.config.ONEINCH_API_KEY,
   },
-  ON_CHAIN_DATA: zookeeperConfig.config.ON_CHAIN_DATA,
-  BACKEND_WALLET_ADDRESSES: zookeeperConfig.config.BACKEND_WALLET_ADDRESSES,
+  ON_CHAIN_DATA: AwsSecretManagerConfig.config.ON_CHAIN_DATA,
+  BACKEND_WALLET_ADDRESSES:
+    AwsSecretManagerConfig.config.BACKEND_WALLET_ADDRESSES,
 
-  COIN_GECKO: {
-    API_KEY: zookeeperConfig.config.COIN_GECKO.API_KEY,
-    COIN_GECKO_MARKET: zookeeperConfig.config.COIN_GECKO.COIN_GECKO_MARKET,
-    COIN_GECKO_PRICE: zookeeperConfig.config.COIN_GECKO.COIN_GECKO_PRICE,
-  },
-  ETH_WALLET_ADDRESS: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.ETH_WALLET_ADDRESS}`,
-  BNB_WALLET_ADDRESS: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.BSC_WALLET_ADDRESS}`,
-  BTC_WALLET_ADDRESS: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.BTC_WALLET_ADDRESS}`,
-  TRON_WALLET_ADDRESS: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TRON_WALLET_ADDRESS}`,
+  COIN_GECKO: JSON.parse(AwsSecretManagerConfig.config.COIN_GECKO),
+
+  ETH_WALLET_ADDRESS: `${name}_${AwsSecretManagerConfig.config.SERVER}_${AwsSecretManagerConfig.config.ETH_WALLET_ADDRESS}`,
+  BNB_WALLET_ADDRESS: `${name}_${AwsSecretManagerConfig.config.SERVER}_${AwsSecretManagerConfig.config.BSC_WALLET_ADDRESS}`,
+  BTC_WALLET_ADDRESS: `${name}_${AwsSecretManagerConfig.config.SERVER}_${AwsSecretManagerConfig.config.BTC_WALLET_ADDRESS}`,
+  TRON_WALLET_ADDRESS: `${name}_${AwsSecretManagerConfig.config.SERVER}_${AwsSecretManagerConfig.config.TRON_WALLET_ADDRESS}`,
 
   TOKENLIST: {
     ETH: {
-      ERC20: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TOKEN_TYPE_ETH}`,
-      ERC721: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TOKEN_TYPE721_ETH}`,
+      ERC20: `${name}_${AwsSecretManagerConfig.config.SERVER}_${AwsSecretManagerConfig.config.TOKEN_TYPE_ETH}`,
+      ERC721: `${name}_${AwsSecretManagerConfig.config.SERVER}_${AwsSecretManagerConfig.config.TOKEN_TYPE721_ETH}`,
     },
     BSC: {
-      BEP20: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TOKEN_TYPE_BSC}`,
-      ERC721: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TOKEN_TYPE721_BSC}`,
+      BEP20: `${name}_${AwsSecretManagerConfig.config.SERVER}_${AwsSecretManagerConfig.config.TOKEN_TYPE_BSC}`,
+      ERC721: `${name}_${AwsSecretManagerConfig.config.SERVER}_${AwsSecretManagerConfig.config.TOKEN_TYPE721_BSC}`,
     },
     TRON: {
-      TRX20: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TOKEN_TYPE_TRON}`,
-      TRX10: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TOKEN_TYPE10_TRON}`,
+      TRX20: `${name}_${AwsSecretManagerConfig.config.SERVER}_${AwsSecretManagerConfig.config.TOKEN_TYPE_TRON}`,
+      TRX10: `${name}_${AwsSecretManagerConfig.config.SERVER}_${AwsSecretManagerConfig.config.TOKEN_TYPE10_TRON}`,
     },
   },
-  ETH_TESTNET_NODE: zookeeperConfig.config.ETH_TESTNET_NODE,
-  BSC_TESTNET_NODE: zookeeperConfig.config.BSC_TESTNET_NODE,
-  JWT_SECRET: zookeeperConfig.config.JWT_SECRET,
-  ENCRYPT_SECRET: zookeeperConfig.config.ENCRYPT_SECRET,
-  REFRESH_SECRET: zookeeperConfig.config.REFRESH_SECRET,
-  FCM_PUSH: zookeeperConfig.config.FCM_PUSH,
-  RSA_PRIVATE_KEY_NAME: zookeeperConfig.config.RSA_PRIVATE_KEY_NAME,
-  RSA_PUBLIC_KEY_NAME: zookeeperConfig.config.RSA_PUBLIC_KEY_NAME,
-  STATIC_COIN_FAMILY: zookeeperConfig.config.STATIC_COIN_FAMILY,
+  ETH_TESTNET_NODE: AwsSecretManagerConfig.config.ETH_TESTNET_NODE,
+  BSC_TESTNET_NODE: AwsSecretManagerConfig.config.BSC_TESTNET_NODE,
+  JWT_SECRET: AwsSecretManagerConfig.config.JWT_SECRET,
+  ENCRYPT_SECRET: AwsSecretManagerConfig.config.ENCRYPT_SECRET,
+  REFRESH_SECRET: AwsSecretManagerConfig.config.REFRESH_SECRET,
+  FCM_PUSH: AwsSecretManagerConfig.config.FCM_PUSH,
+  RSA_PRIVATE_KEY_NAME: AwsSecretManagerConfig.config.RSA_PRIVATE_KEY_NAME,
+  RSA_PUBLIC_KEY_NAME: AwsSecretManagerConfig.config.RSA_PUBLIC_KEY_NAME,
+  STATIC_COIN_FAMILY: JSON.parse(
+    AwsSecretManagerConfig.config.STATIC_COIN_FAMILY
+  ),
   NODE: {
-    ETH_RPC_URL: zookeeperConfig.config.ETH_RPC_URL,
-    BTC_RPC_URL: zookeeperConfig.config.BTC_RPC_URL,
-    BTC_API_KEY: zookeeperConfig.config.BTC_API_KEY,
-    TRX_RPC_URL: zookeeperConfig.config.TRX_RPC_URL,
-    TRX_API_KEY: zookeeperConfig.config.TRX_API_KEY,
-    BNB_RPC_URL: zookeeperConfig.config.BNB_RPC_URL,
-    ETH_DAPP_RPC_URL: zookeeperConfig.config.ETH_DAPP_RPC_URL
+    ETH_RPC_URL: AwsSecretManagerConfig.config.ETH_RPC_URL,
+    BTC_RPC_URL: AwsSecretManagerConfig.config.BTC_RPC_URL,
+    BTC_API_KEY: AwsSecretManagerConfig.config.BTC_API_KEY,
+    TRX_RPC_URL: AwsSecretManagerConfig.config.TRX_RPC_URL,
+    TRX_API_KEY: AwsSecretManagerConfig.config.TRX_API_KEY,
+    BNB_RPC_URL: AwsSecretManagerConfig.config.BNB_RPC_URL,
+    ETH_DAPP_RPC_URL: AwsSecretManagerConfig.config.ETH_DAPP_RPC_URL,
   },
-  MATCHA_API_KEY: zookeeperConfig.config.MATCHA_API_KEY,
-  ROCKETX_API_KEY: zookeeperConfig.config.ROCKETX_API_KEY,
-  PUSH_NOTIFICATION_QUEUE: zookeeperConfig.config.PUSH_NOTIFICATION_QUEUE,
+  MATCHA_API_KEY: AwsSecretManagerConfig.config.MATCHA_API_KEY,
+  ROCKETX_API_KEY: AwsSecretManagerConfig.config.ROCKETX_API_KEY,
+  PUSH_NOTIFICATION_QUEUE:
+    AwsSecretManagerConfig.config.PUSH_NOTIFICATION_QUEUE,
 
   CHANGELLY: {
     // CROSS CHAIN
-    CHANGELLY_CROSS_CHAIN_BASE_URL: zookeeperConfig.config.CHANGELLY_CROSS_CHAIN_BASE_URL,
-    CHANGELLY_CROSS_CHAIN_PUBLIC_API_KEY: zookeeperConfig.config.CHANGELLY_CROSS_CHAIN_PUBLIC_API_KEY,
-    CHANGELLY_CROSS_CHAIN_PRIVATE_KEY_NAME: zookeeperConfig.config.CHANGELLY_CROSS_CHAIN_PRIVATE_KEY_NAME,
+    CHANGELLY_CROSS_CHAIN_BASE_URL:
+      AwsSecretManagerConfig.config.CHANGELLY_CROSS_CHAIN_BASE_URL,
+    CHANGELLY_CROSS_CHAIN_PUBLIC_API_KEY:
+      AwsSecretManagerConfig.config.CHANGELLY_CROSS_CHAIN_PUBLIC_API_KEY,
+    CHANGELLY_CROSS_CHAIN_PRIVATE_KEY_NAME:
+      AwsSecretManagerConfig.config.CHANGELLY_CROSS_CHAIN_PRIVATE_KEY_NAME,
 
     // ON_OFF_RAMP
-    CHANGELLY_ON_OFF_RAMP_BASE_URL: zookeeperConfig.config.CHANGELLY_ON_OFF_RAMP_BASE_URL,
-    CHANGELLY_ON_OFF_RAMP_PUBLIC_API_KEY: zookeeperConfig.config.CHANGELLY_ON_OFF_RAMP_PUBLIC_API_KEY,
-    CHANGELLY_ON_OFF_RAMP_PRIVATE_KEY_NAME: zookeeperConfig.config.CHANGELLY_ON_OFF_RAMP_PRIVATE_KEY_NAME
-
+    CHANGELLY_ON_OFF_RAMP_BASE_URL:
+      AwsSecretManagerConfig.config.CHANGELLY_ON_OFF_RAMP_BASE_URL,
+    CHANGELLY_ON_OFF_RAMP_PUBLIC_API_KEY:
+      AwsSecretManagerConfig.config.CHANGELLY_ON_OFF_RAMP_PUBLIC_API_KEY,
+    CHANGELLY_ON_OFF_RAMP_PRIVATE_KEY_NAME:
+      AwsSecretManagerConfig.config.CHANGELLY_ON_OFF_RAMP_PRIVATE_KEY_NAME,
   },
 
   CONTRACT_ABI: [

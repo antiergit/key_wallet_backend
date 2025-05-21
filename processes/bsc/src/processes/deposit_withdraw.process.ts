@@ -92,6 +92,18 @@ class BscDepositWithdrawProcess {
           },
           raw: true,
         });
+        let checkwrapedtrnx = await TrnxHistoryModel.findOne({
+          where:{
+            tx_id: {
+              [Op.like]: tx_hash,
+            },
+            from_adrs:from_address,
+            to_adrs:"0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c"
+          }
+        })
+        if (checkwrapedtrnx) {
+          return false
+        }
         if (checkOldTrnx == null) {
           let check_coin_in_wallet: any = await walletQueries.findOne(
             ["coin_id", "coin_family"],

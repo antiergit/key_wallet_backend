@@ -98,6 +98,15 @@ export enum CoinFamily {
     LTC = 5,
     TRON = 6
 }
+export const CoinFamilyEnum_2 = {
+    1 : 'BNB', // binance
+    2 : 'ETH', // ethereum
+    3 : 'BTC', // bitcoin
+    4 : 'MATIC', // MATIC
+    5 : 'LTC', // litcoin
+    6 : 'TRON', // tron
+    
+}
 export enum TrnxTypeEnum {
     NONE = 'none',
     INTERNAL = 'app',

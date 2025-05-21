@@ -25,6 +25,14 @@ class WalletRoute implements ControllerInterface {
       jwtVerification.verifyToken,
       walletController.portfolio
     );
+
+    this.router.post(
+      `${this.path}/portfolio_with_balance`,
+      [validateExpress(wallet_validator.portfolioValidate)],
+      jwtVerification.verifyToken,
+      walletController.portfolioWithBalance
+    );
+
     this.router.post(
       `${this.path}/activeinactive`,
       [validateExpress(wallet_validator.activeInactiveWallet)],
@@ -106,6 +114,11 @@ class WalletRoute implements ControllerInterface {
       walletController.allBalances
     );
     this.router.post(
+      `${this.path}/allBalances_v2`,
+      //[validateExpress(wallet_validator.allBalances_v2)],
+      walletController.allBalances_v2
+    );
+    this.router.post(
       `${this.path}/updateBalance`,
       jwtVerification.verifyToken,
       walletController.updateBalance
@@ -113,6 +126,11 @@ class WalletRoute implements ControllerInterface {
     this.router.get(
       `${this.path}/transaction/downloadcsv/:id`,
       walletController.downloadCsv
+    );
+    this.router.get(
+      `${this.path}/addressValidateChainalysis`,
+      jwtVerification.verifyToken,
+      walletController.addressValidateChainalysis
     );
   }
 }

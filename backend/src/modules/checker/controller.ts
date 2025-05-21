@@ -113,7 +113,7 @@ class CheckerController implements OnlyControllerInterface {
                 include: [{
                     model: Models.WalletModel,
                     attributes: ['balance'],
-                    where: { user_id: userId },
+                    where: { user_id: userId, coin_family: { [Op.in]: coinFamily } },
                     as: "maker_request_backend_wallet_data"
                 }, {
                     model: Models.CoinsModel,

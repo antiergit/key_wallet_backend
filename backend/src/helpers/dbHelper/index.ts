@@ -172,7 +172,10 @@ class DbHelper {
         fiat_type: 'USD',
         country_code: null,
         order_status: req.body.order_id ? GlblBlockchainTxStatusEnum.PENDING : null,
-        rocketx_request_id: req.body?.requestId ? req.body?.requestId : null
+        rocketx_request_id: req.body?.requestId ? req.body?.requestId : null,
+        changelly_order_id: req.body?.changelly_order_id ? req.body?.changelly_order_id : null,
+        to_coin_family: req.body?.to_coin_family ? req.body?.to_coin_family : null,
+        recipient_address : req.body?.recipientAddress ? req.body?.recipientAddress : null,
       });
 
       if (updateWallet) {

@@ -11,6 +11,7 @@ import { GlblBlockchainTxStatusEnum, GlblCode, GlblStatus, TxTypesEnum, TxReqTyp
 import { language } from "../../constants";
 import commonHelper from "../../helpers/common/common.helpers";
 import modelTron_bandwidth from "../../models/model/model.tron_bandwidth";
+import { global_helper } from "../../helpers/common/global_helper";
 
 
 class TronController implements OnlyControllerInterface {
@@ -114,7 +115,6 @@ class TronController implements OnlyControllerInterface {
                     };
                     return response.error(res, { data: resMsg });
                 }
-
                 return await Tron_Helper.BroadcastRawTx(
                     trnx_raw,
                     async (error: any, txRes: any) => {
@@ -134,7 +134,7 @@ class TronController implements OnlyControllerInterface {
                             let resMsg = {
                                 status: false,
                                 message: message,
-                                trnx_hash: null,
+                                tx_hash: null,
                             };
                             return response.error(res, { data: resMsg });
                         } else {
@@ -175,13 +175,54 @@ class TronController implements OnlyControllerInterface {
                                 fiat_price: null,
                                 country_code: null,
                                 order_status: req.body.order_id ? GlblBlockchainTxStatusEnum.PENDING : null,
-                                rocketx_request_id: req.body?.requestId ? req.body?.requestId : null
+                                rocketx_request_id: req.body?.requestId ? req.body?.requestId : null,
+                                changelly_order_id: req.body?.changelly_order_id ? req.body?.changelly_order_id : null,
+                                to_coin_family: req.body?.to_coin_family ? req.body?.to_coin_family : null,
+                                recipient_address: req.body?.recipientAddress ? req.body?.recipientAddress : null,
+
                             });
+
+                            // Add notification for pending transaction
+                            let trnxTypeW: string = "Withdraw";
+                            switch (req.body.tx_type) {
+                                case 'DAPP':
+                                    trnxTypeW = "Smart Contract Execution";
+                                    break;
+                                case 'Approve':
+                                    trnxTypeW = "Approval";
+                                    break;
+                                case 'SWAP':
+                                    trnxTypeW = "Swap";
+                                    break;
+                                case 'CROSS_CHAIN':
+                                    trnxTypeW = "Cross-chain Swap";
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                            const notiMsg = `${trnxTypeW} of ${req.body.amount} ${req.coininfo.coin_symbol.toUpperCase()} is pending.`;
+
+                            let notifData: any = {
+                                title: "WITHDRAW",
+                                message: notiMsg,
+                                amount: req.body.amount,
+                                from_user_id: 0,
+                                to_user_id: req.userId,
+                                coin_symbol: req.coininfo.coin_symbol,
+                                wallet_address: req.body.from,
+                                tx_id: req.body.tx_hash,
+                                coin_id: req.coininfo.coin_id,
+                                tx_type: req.body.tx_type,
+                                notification_type: "withdraw",
+                            };
+
+                            await global_helper.SendNotification(notifData);
 
                             let resMsg = {
                                 status: true,
                                 message: language[lang].WITHDRAW_REQUEST_ETH(req.body.amount, req.coininfo.coin_symbol),
-                                trnx_hash: txRes.data.txid,
+                                tx_hash: txRes.data.txid,
                             };
                             return response.success(res, { data: resMsg });
                         }
@@ -208,7 +249,7 @@ class TronController implements OnlyControllerInterface {
 
     public async getEstimationGas(req: Request, res: Response) {
         try {
-
+            console.log("---getEstimationGas----------", req.body)
             let tronFee: any = {};
             const body: {
                 fromAddress: string;

@@ -29,15 +29,21 @@ let utxoClass = class UTXO {
     public async get_fee_price(coin_info: any, body: any, lang: string) {
         try {
             const { from, to }: { from: string; to: string } = body;
+            console.log("------ from ,to ---------",from,to,"----coin_info----",coin_info)
             let estimateGas: any;
             let set_token_type = coin_info.token_type !== undefined ? coin_info.token_type : TokenType.BEP20;
             if (coin_info.is_token) {
+
+                console.log("------",coin_info.is_token)
+
                 if (set_token_type == TokenType.BEP20) {
                     estimateGas = await bscWeb3.getBep20TokenTransferGasEstimationCost(coin_info.token_address, config.CONTRACT_ABI as AbiItem[], from, to, lang);
                 } else {
                     console.log("is_token can't be 0 ")
                 }
             } else {
+                console.log("-- +++----")
+
                 estimateGas = await bscWeb3.getBscGasLimit(from, to);
             }
 

@@ -3,6 +3,7 @@ import { NotificationInterface } from "../interface/interface.notifications";
 import db from "../../helpers/common/db";
 import CoinsModel from "./model.coins";
 import CurrencyFiatModel from "./model.currencyFiat";
+import TrnxHistoryModel from "./model.trnxHistory";
 
 interface NotificationCreationModel
   extends Optional<NotificationInterface, "notification_id"> { }
@@ -119,6 +120,5 @@ const NotificationModel = db.db_write.define<NotificationInstance>(
 );
 NotificationModel.belongsTo(CoinsModel, { foreignKey: 'coin_id', targetKey: "coin_id", as: "coin_data" });
 NotificationModel.belongsTo(CurrencyFiatModel, { foreignKey: 'fiat_type', targetKey: "currency_code", as: "currency_data" });
-
-
+NotificationModel.belongsTo(TrnxHistoryModel, { foreignKey: 'tx_id', targetKey: "id", as: "trnx_data" });
 export default NotificationModel;

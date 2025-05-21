@@ -1,71 +1,75 @@
-import zookeeperConfig from "../helpers/common/zookeeper.helper";
+import AwsSecretManagerConfig from "../helpers/common/awsSecrets.config";
+// import zookeeperConfig from "../helpers/common/zookeeper.helper";
 const name = "novatide";
+const parsedCoinGecko = JSON.parse(AwsSecretManagerConfig.config.COIN_GECKO.replace(/'/g, '"'))
+const parsedEth = JSON.parse(AwsSecretManagerConfig.config.ETH.replace(/'/g, '"'))
+const parsedBnb = JSON.parse(AwsSecretManagerConfig.config.BNB.replace(/'/g, '"'))
 
 export const config = {
-  APP_NAME: zookeeperConfig.config.APP_NAME,
-  SERVER: zookeeperConfig.config.SERVER,
-  PORT: zookeeperConfig.config.PORT,
+  APP_NAME: AwsSecretManagerConfig.config.APP_NAME,
+  SERVER: AwsSecretManagerConfig.config.SERVER,
+  PORT: AwsSecretManagerConfig.config.PORT,
   DB: {
-    DB_USER: zookeeperConfig.config.DB_USER,
-    DB_PASSWORD: zookeeperConfig.config.DB_PASSWORD,
-    DB_NAME: zookeeperConfig.config.DB_NAME,
-    DB_HOST_WRITE: zookeeperConfig.config.DB_HOST_WRITE,
-    DB_HOST_READ: zookeeperConfig.config.DB_HOST_READ,
+    DB_USER: AwsSecretManagerConfig.config.DB_USER,
+    DB_PASSWORD: AwsSecretManagerConfig.config.DB_PASSWORD,
+    DB_NAME: AwsSecretManagerConfig.config.DB_NAME,
+    DB_HOST_WRITE: AwsSecretManagerConfig.config.DB_HOST_WRITE,
+    DB_HOST_READ: AwsSecretManagerConfig.config.DB_HOST_READ,
   },
-  RABBIT_MQ: zookeeperConfig.config.RABBIT_MQ_CONN,
-  BACKEND_WALLET_ADDRESSES: zookeeperConfig.config.BACKEND_WALLET_ADDRESSES,
-  REDIS_CONN: zookeeperConfig.config.REDIS_CONN,
-  STATIC_COIN_FAMILY: zookeeperConfig.config.STATIC_COIN_FAMILY,
+  RABBIT_MQ: AwsSecretManagerConfig.config.RABBIT_MQ_CONN,
+  BACKEND_WALLET_ADDRESSES: AwsSecretManagerConfig.config.BACKEND_WALLET_ADDRESSES,
+  REDIS_CONN: AwsSecretManagerConfig.config.REDIS_CONN,
+  STATIC_COIN_FAMILY: JSON.parse(AwsSecretManagerConfig.config.STATIC_COIN_FAMILY.replace(/'/g, '"')),
   NODE: {
-    ETH_RPC_URL: zookeeperConfig.config.ETH_RPC_URL,
-    BTC_RPC_URL: zookeeperConfig.config.BTC_RPC_URL,
-    BTC_API_KEY: zookeeperConfig.config.BTC_API_KEY,
-    TRX_RPC_URL: zookeeperConfig.config.TRX_RPC_URL,
-    TRX_API_KEY: zookeeperConfig.config.TRX_API_KEY,
-    BNB_RPC_URL: zookeeperConfig.config.BNB_RPC_URL
+    ETH_RPC_URL: AwsSecretManagerConfig.config.ETH_RPC_URL,
+    BTC_RPC_URL: AwsSecretManagerConfig.config.BTC_RPC_URL,
+    BTC_API_KEY: AwsSecretManagerConfig.config.BTC_API_KEY,
+    TRX_RPC_URL: AwsSecretManagerConfig.config.TRX_RPC_URL,
+    TRX_API_KEY: AwsSecretManagerConfig.config.TRX_API_KEY,
+    BNB_RPC_URL: AwsSecretManagerConfig.config.BNB_RPC_URL
   },
-  PUSH_NOTIFICATION_QUEUE: zookeeperConfig.config.PUSH_NOTIFICATION_QUEUE,
+  PUSH_NOTIFICATION_QUEUE: AwsSecretManagerConfig.config.PUSH_NOTIFICATION_QUEUE,
   ETH: {
-    GAS_FEE_URL: zookeeperConfig.config.ETH.GAS_FEE_URL,
-    GAS_FEE_API_KEY: zookeeperConfig.config.ETH.GAS_FEE_API_KEY,
-    ETH_WALLET_ADDRESS: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.ETH_WALLET_ADDRESS}`,
-    TOKEN_TYPE_ETH: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TOKEN_TYPE_ETH}`,
+    GAS_FEE_URL: parsedEth.GAS_FEE_URL,
+    GAS_FEE_API_KEY: parsedEth.GAS_FEE_API_KEY,
+    ETH_WALLET_ADDRESS: `${name}_${AwsSecretManagerConfig.config.SERVER}_${AwsSecretManagerConfig.config.ETH_WALLET_ADDRESS}`,
+    TOKEN_TYPE_ETH: `${name}_${AwsSecretManagerConfig.config.SERVER}_${AwsSecretManagerConfig.config.TOKEN_TYPE_ETH}`,
 
   },
   BNB: {
-    GAS_FEE_URL: zookeeperConfig.config.BNB.GAS_FEE_URL,
-    GAS_FEE_API_KEY: zookeeperConfig.config.BNB.GAS_FEE_API_KEY,
-    BNB_WALLET_ADDRESS: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.BSC_WALLET_ADDRESS}`,
-    TOKEN_TYPE_BSC: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TOKEN_TYPE_BSC}`,
+    GAS_FEE_URL: parsedBnb.GAS_FEE_URL,
+    GAS_FEE_API_KEY: parsedBnb.GAS_FEE_API_KEY,
+    BNB_WALLET_ADDRESS: `${name}_${AwsSecretManagerConfig.config.SERVER}_${AwsSecretManagerConfig.config.BSC_WALLET_ADDRESS}`,
+    TOKEN_TYPE_BSC: `${name}_${AwsSecretManagerConfig.config.SERVER}_${AwsSecretManagerConfig.config.TOKEN_TYPE_BSC}`,
   },
   BTC: {
-    BTC_WALLET_ADDRESS: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.BTC_WALLET_ADDRESS}`,
+    BTC_WALLET_ADDRESS: `${name}_${AwsSecretManagerConfig.config.SERVER}_${AwsSecretManagerConfig.config.BTC_WALLET_ADDRESS}`,
   },
   TRON: {
-    TRON_WALLET_ADDRESS: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TRON_WALLET_ADDRESS}`,
-    TOKEN_TYPE_TRON: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TOKEN_TYPE_TRON}`,
+    TRON_WALLET_ADDRESS: `${name}_${AwsSecretManagerConfig.config.SERVER}_${AwsSecretManagerConfig.config.TRON_WALLET_ADDRESS}`,
+    TOKEN_TYPE_TRON: `${name}_${AwsSecretManagerConfig.config.SERVER}_${AwsSecretManagerConfig.config.TOKEN_TYPE_TRON}`,
 
   },
   REDISKEYS: {
-    COIN_LIMIT_COUNTS: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.COIN_LIMIT_COUNTS}`,
-    COIN_LIMIT_COUNT_FIELD: zookeeperConfig.config.COIN_LIMIT_COUNT_FIELD,
+    COIN_LIMIT_COUNTS: `${name}_${AwsSecretManagerConfig.config.SERVER}_${AwsSecretManagerConfig.config.COIN_LIMIT_COUNTS}`,
+    COIN_LIMIT_COUNT_FIELD: JSON.parse(AwsSecretManagerConfig.config.COIN_LIMIT_COUNT_FIELD.replace(/'/g, '"')),
   },
   COIN_GECKO: {
-    COIN_GECKO_MARKET: zookeeperConfig.config.COIN_GECKO.COIN_GECKO_MARKET,
-    COIN_GECKO_BY_TOKEN: zookeeperConfig.config.COIN_GECKO.COIN_GECKO_BY_TOKEN,
-    API_KEY: zookeeperConfig.config.COIN_GECKO.API_KEY
+    COIN_GECKO_MARKET: parsedCoinGecko.COIN_GECKO_MARKET,
+    COIN_GECKO_BY_TOKEN: parsedCoinGecko.COIN_GECKO_BY_TOKEN,
+    API_KEY: parsedCoinGecko.API_KEY
   },
-  PENDING_CROSS_CHAIN_TX_TOPIC: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.PENDING_CROSS_CHAIN_TX_TOPIC}`,
+  PENDING_CROSS_CHAIN_TX_TOPIC: `${name}_${AwsSecretManagerConfig.config.SERVER}_${AwsSecretManagerConfig.config.PENDING_CROSS_CHAIN_TX_TOPIC}`,
   CHANGELLY: {
     // CROSS CHAIN
-    CHANGELLY_CROSS_CHAIN_BASE_URL: zookeeperConfig.config.CHANGELLY_CROSS_CHAIN_BASE_URL,
-    CHANGELLY_CROSS_CHAIN_PUBLIC_API_KEY: zookeeperConfig.config.CHANGELLY_CROSS_CHAIN_PUBLIC_API_KEY,
-    CHANGELLY_CROSS_CHAIN_PRIVATE_KEY_NAME: zookeeperConfig.config.CHANGELLY_CROSS_CHAIN_PRIVATE_KEY_NAME,
+    CHANGELLY_CROSS_CHAIN_BASE_URL: AwsSecretManagerConfig.config.CHANGELLY_CROSS_CHAIN_BASE_URL,
+    CHANGELLY_CROSS_CHAIN_PUBLIC_API_KEY: AwsSecretManagerConfig.config.CHANGELLY_CROSS_CHAIN_PUBLIC_API_KEY,
+    CHANGELLY_CROSS_CHAIN_PRIVATE_KEY_NAME: AwsSecretManagerConfig.config.CHANGELLY_CROSS_CHAIN_PRIVATE_KEY_NAME,
 
     // ON_OFF_RAMP
-    CHANGELLY_ON_OFF_RAMP_BASE_URL: zookeeperConfig.config.CHANGELLY_ON_OFF_RAMP_BASE_URL,
-    CHANGELLY_ON_OFF_RAMP_PUBLIC_API_KEY: zookeeperConfig.config.CHANGELLY_ON_OFF_RAMP_PUBLIC_API_KEY,
-    CHANGELLY_ON_OFF_RAMP_PRIVATE_KEY_NAME: zookeeperConfig.config.CHANGELLY_ON_OFF_RAMP_PRIVATE_KEY_NAME
+    CHANGELLY_ON_OFF_RAMP_BASE_URL: AwsSecretManagerConfig.config.CHANGELLY_ON_OFF_RAMP_BASE_URL,
+    CHANGELLY_ON_OFF_RAMP_PUBLIC_API_KEY: AwsSecretManagerConfig.config.CHANGELLY_ON_OFF_RAMP_PUBLIC_API_KEY,
+    CHANGELLY_ON_OFF_RAMP_PRIVATE_KEY_NAME: AwsSecretManagerConfig.config.CHANGELLY_ON_OFF_RAMP_PRIVATE_KEY_NAME
 
   },
   CONTRACT_ABI: [

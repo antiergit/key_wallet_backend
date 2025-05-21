@@ -9,14 +9,22 @@ class ETHStartProcess {
     this.ethWithdrawDepositProcess();
     this.getPendingWithdrawalTxProcess();
     this.updateTxStatusProcess();
+    this.read_behined_block_process()
     // this.testing_node()
   }
   public read_block_process() {
-    schedule.scheduleJob("*/12 * * * * *", async function () {
+    schedule.scheduleJob("*/6 * * * * *", async function () {
       await eth_blocks_process.getBlocks();
+      //await eth_blocks_process.readBehindBlock()
+    });
+  }
+
+  public read_behined_block_process() {
+    schedule.scheduleJob("*/3 * * * * *", async function () {
       await eth_blocks_process.readBehindBlock()
     });
   }
+
   // public testing_node() {
   //   schedule.scheduleJob("*/2 * * * * *", async function () {
   //     await eth_blocks_process.testingNode();

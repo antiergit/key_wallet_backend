@@ -140,6 +140,18 @@ let dataObj = {
         type: DataTypes.STRING,
         allowNull: true
     },
+    changelly_order_id: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    to_coin_family: {
+        type: DataTypes.TINYINT,
+        allowNull: true
+    },
+    recipient_address :{
+        type: DataTypes.STRING,
+        allowNull: true
+    }
 };
 
 let dataObjIndex = {

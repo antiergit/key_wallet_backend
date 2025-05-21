@@ -1,61 +1,62 @@
+import AwsSecretManagerConfig from "../connections/awsSecrets.config";
 import zookeeperConfig from "../connections/zookeeper.conn";
 const name = 'novatide';
 export const config = {
 
-   DB_USER: zookeeperConfig.config.DB_USER,
-   DB_HOST_READ: zookeeperConfig.config.DB_HOST_READ,
-   DB_HOST_WRITE: zookeeperConfig.config.DB_HOST_WRITE,
-   DB_NAME: zookeeperConfig.config.DB_NAME,
-   DB_PASSWORD: zookeeperConfig.config.DB_PASSWORD,
-   DB_PORT: zookeeperConfig.config.DB_PORT,
-   DEPOSIT_WITHDRAW_PROCESS_TRON: zookeeperConfig.config.DEPOSIT_WITHDRAW_PROCESS_TRON,
-   TRON_WALLET_ADDRESS: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TRON_WALLET_ADDRESS}`,
-   PENDING_WITHDRAWAL_TX_PROCESS_TRON: zookeeperConfig.config.PENDING_WITHDRAWAL_TX_PROCESS_TRON,
-   RABBIT_MQ: zookeeperConfig.config.RABBIT_MQ_CONN,
-   REDIS_CONN: zookeeperConfig.config.REDIS_CONN,//
-   MIN_BLOCK_CONFIRMATIONS_TRON: zookeeperConfig.config.MIN_BLOCK_CONFIRMATIONS_TRON,
-   TOKEN_TYPE_TRON: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TOKEN_TYPE_TRON}`,
-   TOKEN_TYPE10_TRON: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TOKEN_TYPE10_TRON}`,
-   COIN_FAMILY_TRON: zookeeperConfig.config.COIN_FAMILY_TRON,
+   DB_USER: AwsSecretManagerConfig.config.DB_USER,
+   DB_HOST_READ: AwsSecretManagerConfig.config.DB_HOST_READ,
+   DB_HOST_WRITE: AwsSecretManagerConfig.config.DB_HOST_WRITE,
+   DB_NAME: AwsSecretManagerConfig.config.DB_NAME,
+   DB_PASSWORD: AwsSecretManagerConfig.config.DB_PASSWORD,
+   DB_PORT: AwsSecretManagerConfig.config.DB_PORT,
+   DEPOSIT_WITHDRAW_PROCESS_TRON: AwsSecretManagerConfig.config.DEPOSIT_WITHDRAW_PROCESS_TRON,
+   TRON_WALLET_ADDRESS: `${name}_${AwsSecretManagerConfig.config.SERVER}_${AwsSecretManagerConfig.config.TRON_WALLET_ADDRESS}`,
+   PENDING_WITHDRAWAL_TX_PROCESS_TRON: AwsSecretManagerConfig.config.PENDING_WITHDRAWAL_TX_PROCESS_TRON,
+   RABBIT_MQ: AwsSecretManagerConfig.config.RABBIT_MQ_CONN,
+   REDIS_CONN: AwsSecretManagerConfig.config.REDIS_CONN,//
+   MIN_BLOCK_CONFIRMATIONS_TRON: AwsSecretManagerConfig.config.MIN_BLOCK_CONFIRMATIONS_TRON,
+   TOKEN_TYPE_TRON: `${name}_${AwsSecretManagerConfig.config.SERVER}_${AwsSecretManagerConfig.config.TOKEN_TYPE_TRON}`,
+   TOKEN_TYPE10_TRON: `${name}_${AwsSecretManagerConfig.config.SERVER}_${AwsSecretManagerConfig.config.TOKEN_TYPE10_TRON}`,
+   COIN_FAMILY_TRON: AwsSecretManagerConfig.config.COIN_FAMILY_TRON,
    KEYS: {
-      FCM_PUSH: zookeeperConfig.config.FCM_PUSH
+      FCM_PUSH: AwsSecretManagerConfig.config.FCM_PUSH
    },
-   PUSH_NOTIFICATION_QUEUE: zookeeperConfig.config.PUSH_NOTIFICATION_QUEUE,
+   PUSH_NOTIFICATION_QUEUE: AwsSecretManagerConfig.config.PUSH_NOTIFICATION_QUEUE,
    REDISKEYS: {
-      TRON_BLOCKS: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TRON_BLOCKS} `,
-      OLD_BLOCK_TRON: zookeeperConfig.config.OLD_BLOCK_TRON,
-      NEW_BLOCK_TRON: zookeeperConfig.config.NEW_BLOCK_TRON,
-      ALL_PROCESSES: zookeeperConfig.config.ALL_PROCESSES,
-      TRON_ERROR_LOGS: zookeeperConfig.config.TRON_ERROR_LOGS,
-      NODE_ALERT_TRON: zookeeperConfig.config.NODE_ALERT_TRON,
-      SPECIFIC_BLOCK_TRON: zookeeperConfig.config.SPECIFIC_BLOCK_TRON
+      TRON_BLOCKS: `${name}_${AwsSecretManagerConfig.config.SERVER}_${AwsSecretManagerConfig.config.TRON_BLOCKS} `,
+      OLD_BLOCK_TRON: AwsSecretManagerConfig.config.OLD_BLOCK_TRON,
+      NEW_BLOCK_TRON: AwsSecretManagerConfig.config.NEW_BLOCK_TRON,
+      ALL_PROCESSES: AwsSecretManagerConfig.config.ALL_PROCESSES,
+      TRON_ERROR_LOGS: AwsSecretManagerConfig.config.TRON_ERROR_LOGS,
+      NODE_ALERT_TRON: AwsSecretManagerConfig.config.NODE_ALERT_TRON,
+      SPECIFIC_BLOCK_TRON: AwsSecretManagerConfig.config.SPECIFIC_BLOCK_TRON
 
    },
-   NODE_ISSUE_ALERT_EMAIL: zookeeperConfig.config.NODE_ISSUE_ALERT_EMAIL,
+   NODE_ISSUE_ALERT_EMAIL: AwsSecretManagerConfig.config.NODE_ISSUE_ALERT_EMAIL,
    MAILGUN: {
-      MAILGUN_API_KEY: zookeeperConfig.config.MAILGUN_API_KEY,
-      MAILGUN_DOMAIN: zookeeperConfig.config.MAILGUN_DOMAIN,
-      MAILGUN_BASE_URL: zookeeperConfig.config.MAILGUN_BASE_URL,
-      FROM_GMAIL: zookeeperConfig.config.FROM_GMAIL
+      MAILGUN_API_KEY: AwsSecretManagerConfig.config.MAILGUN_API_KEY,
+      MAILGUN_DOMAIN: AwsSecretManagerConfig.config.MAILGUN_DOMAIN,
+      MAILGUN_BASE_URL: AwsSecretManagerConfig.config.MAILGUN_BASE_URL,
+      FROM_GMAIL: AwsSecretManagerConfig.config.FROM_GMAIL
    },
    TRANSACTIONS: {
-      tron_behined_transactions: zookeeperConfig.config.tron_behined_transactions,
-      tron_all_blocks: zookeeperConfig.config.tron_all_blocks,
+      tron_behined_transactions: AwsSecretManagerConfig.config.tron_behined_transactions,
+      tron_all_blocks: AwsSecretManagerConfig.config.tron_all_blocks,
    },
    NODE: {
-      ETH_RPC_URL: zookeeperConfig.config.ETH_RPC_URL,
-      BTC_RPC_URL: zookeeperConfig.config.BTC_RPC_URL,
-      BTC_API_KEY: zookeeperConfig.config.BTC_API_KEY,
-      TRX_RPC_URL: zookeeperConfig.config.TRX_RPC_URL,
-      TRX_API_KEY: zookeeperConfig.config.TRX_API_KEY,
-      BNB_RPC_URL: zookeeperConfig.config.BNB_RPC_URL
+      ETH_RPC_URL: AwsSecretManagerConfig.config.ETH_RPC_URL,
+      BTC_RPC_URL: AwsSecretManagerConfig.config.BTC_RPC_URL,
+      BTC_API_KEY: AwsSecretManagerConfig.config.BTC_API_KEY,
+      TRX_RPC_URL: AwsSecretManagerConfig.config.TRX_RPC_URL,
+      TRX_API_KEY: AwsSecretManagerConfig.config.TRX_API_KEY,
+      BNB_RPC_URL: AwsSecretManagerConfig.config.BNB_RPC_URL
    },
    LAST_BLOCK_FILE_PATH: __dirname + "/lastBlock.txt",
-   READ_BEHINED_BLOCK_TRON: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.READ_BEHINED_BLOCK_TRON}`,
-   BLOCKS: zookeeperConfig.config.BLOCKS,
-   USER_ALL_COINS_BALANCE_UPDATE: zookeeperConfig.config.USER_ALL_COINS_BALANCE_UPDATE,
-   TRON_UPDATE_BALANCE_OF_COIN: zookeeperConfig.config.TRON_UPDATE_BALANCE_OF_COIN,
-   BACKEND_WALLET_ADDRESSES: zookeeperConfig.config.BACKEND_WALLET_ADDRESSES,
+   READ_BEHINED_BLOCK_TRON: `${name}_${AwsSecretManagerConfig.config.SERVER}_${AwsSecretManagerConfig.config.READ_BEHINED_BLOCK_TRON}`,
+   BLOCKS: AwsSecretManagerConfig.config.BLOCKS,
+   USER_ALL_COINS_BALANCE_UPDATE: AwsSecretManagerConfig.config.USER_ALL_COINS_BALANCE_UPDATE,
+   TRON_UPDATE_BALANCE_OF_COIN: AwsSecretManagerConfig.config.TRON_UPDATE_BALANCE_OF_COIN,
+   BACKEND_WALLET_ADDRESSES: AwsSecretManagerConfig.config.BACKEND_WALLET_ADDRESSES,
 
 
    CONTRACT_ABI: [

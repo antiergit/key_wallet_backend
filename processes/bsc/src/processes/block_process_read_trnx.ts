@@ -7,6 +7,7 @@ import rabbitMq from "../config/rabbitMq";
 import { Op } from "sequelize";
 import { global_helper } from "../helpers/global_helper";
 import { behindBlockQueries } from '../helpers/dbHelper/index'
+import { BehindBlockModel } from "../models";
 
 
 class Bsc_block_process {
@@ -148,7 +149,8 @@ class Bsc_block_process {
                     let dataaaaa_exist: any = await bscProcessHelper.setKeyValuePair(config.BLOCKS, config.READ_BEHINED_BLOCK_BSC, JSON.stringify(add_data))
                 } else {
                     console.log("id>>>>>>>>>>>", id)
-                    await behindBlockQueries.destroy({ id: id })
+                    //await behindBlockQueries.destroy({ id: id })
+                    await BehindBlockModel.update({ status: 1 }, { where: { id: id } })
                     await bscProcessHelper.deleteKeyValuePair(config.BLOCKS, config.READ_BEHINED_BLOCK_BSC)
 
                     let behindBlocks: any = await bscProcessHelper.behindBlocks()

@@ -1,68 +1,68 @@
-import zookeeperConfig from "../helpers/zookeeper.helper";
+import AwsSecretManagerConfig from "../helpers/awsSecrets.config";
 const name = 'novatide';
 export const config = {
-  // API_URL: zookeeperConfig.config.API_URL,
-  // NETWORK: zookeeperConfig.config.NETWORK,
-  DB_USER: zookeeperConfig.config.DB_USER,
-  DB_HOST_READ: zookeeperConfig.config.DB_HOST_READ,
-  DB_HOST_WRITE: zookeeperConfig.config.DB_HOST_WRITE,
-  DB_NAME: zookeeperConfig.config.DB_NAME,
-  DB_PASSWORD: zookeeperConfig.config.DB_PASSWORD,
-  DB_PORT: zookeeperConfig.config.DB_PORT,
-  DEPOSIT_WITHDRAW_PROCESS_ETH: zookeeperConfig.config.DEPOSIT_WITHDRAW_PROCESS_ETH,
-  ETH_WALLET_ADDRESS: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.ETH_WALLET_ADDRESS}`,
-  // WITHDRAW_QUEUE_BLOCKS_PROCESS: zookeeperConfig.config.WITHDRAW_QUEUE_BLOCKS_PROCESS,
-  PENDING_WITHDRAWAL_TX_PROCESS_ETH: zookeeperConfig.config.PENDING_WITHDRAWAL_TX_PROCESS_ETH,
-  RABBIT_MQ: zookeeperConfig.config.RABBIT_MQ_CONN,
-  REDIS_CONN: zookeeperConfig.config.REDIS_CONN,
-  REDIS_HOST_WRITE: zookeeperConfig.config.REDIS_HOST_WRITE,
-  REDIS_HOST_READ: zookeeperConfig.config.REDIS_HOST_READ,
-  REDIS_PORT: zookeeperConfig.config.REDIS_PORT,
-  MIN_BLOCK_CONFORMATIONS: zookeeperConfig.config.MIN_BLOCK_CONFORMATIONS,
-  TOKEN_TYPE_ETH: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TOKEN_TYPE_ETH}`,
-  TOKEN_TYPE721_ETH: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TOKEN_TYPE721_ETH}`,
-  COIN_FAMILY_ETH: zookeeperConfig.config.COIN_FAMILY_ETH,
+  // API_URL: AwsSecretManagerConfig.config.API_URL,
+  // NETWORK: AwsSecretManagerConfig.config.NETWORK,
+  DB_USER: AwsSecretManagerConfig.config.DB_USER,
+  DB_HOST_READ: AwsSecretManagerConfig.config.DB_HOST_READ,
+  DB_HOST_WRITE: AwsSecretManagerConfig.config.DB_HOST_WRITE,
+  DB_NAME: AwsSecretManagerConfig.config.DB_NAME,
+  DB_PASSWORD: AwsSecretManagerConfig.config.DB_PASSWORD,
+  DB_PORT: AwsSecretManagerConfig.config.DB_PORT,
+  DEPOSIT_WITHDRAW_PROCESS_ETH: AwsSecretManagerConfig.config.DEPOSIT_WITHDRAW_PROCESS_ETH,
+  ETH_WALLET_ADDRESS: `${name}_${AwsSecretManagerConfig.config.SERVER}_${AwsSecretManagerConfig.config.ETH_WALLET_ADDRESS}`,
+  // WITHDRAW_QUEUE_BLOCKS_PROCESS: AwsSecretManagerConfig.config.WITHDRAW_QUEUE_BLOCKS_PROCESS,
+  PENDING_WITHDRAWAL_TX_PROCESS_ETH: AwsSecretManagerConfig.config.PENDING_WITHDRAWAL_TX_PROCESS_ETH,
+  RABBIT_MQ: AwsSecretManagerConfig.config.RABBIT_MQ_CONN,
+  REDIS_CONN: AwsSecretManagerConfig.config.REDIS_CONN,
+  REDIS_HOST_WRITE: AwsSecretManagerConfig.config.REDIS_HOST_WRITE,
+  REDIS_HOST_READ: AwsSecretManagerConfig.config.REDIS_HOST_READ,
+  REDIS_PORT: AwsSecretManagerConfig.config.REDIS_PORT,
+  MIN_BLOCK_CONFORMATIONS: AwsSecretManagerConfig.config.MIN_BLOCK_CONFORMATIONS,
+  TOKEN_TYPE_ETH: `${name}_${AwsSecretManagerConfig.config.SERVER}_${AwsSecretManagerConfig.config.TOKEN_TYPE_ETH}`,
+  TOKEN_TYPE721_ETH: `${name}_${AwsSecretManagerConfig.config.SERVER}_${AwsSecretManagerConfig.config.TOKEN_TYPE721_ETH}`,
+  COIN_FAMILY_ETH: AwsSecretManagerConfig.config.COIN_FAMILY_ETH,
   // added new
   KEYS: {
-    FCM_PUSH: zookeeperConfig.config.FCM_PUSH
+    FCM_PUSH: AwsSecretManagerConfig.config.FCM_PUSH
   },
-  PUSH_NOTIFICATION_QUEUE: zookeeperConfig.config.PUSH_NOTIFICATION_QUEUE,
+  PUSH_NOTIFICATION_QUEUE: AwsSecretManagerConfig.config.PUSH_NOTIFICATION_QUEUE,
   REDISKEYS: {
-    ETH_BLOCKS: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.ETH_BLOCKS} `,
-    OLD_BLOCK_ETH: zookeeperConfig.config.OLD_BLOCK_ETH,
-    NEW_BLOCK_ETH: zookeeperConfig.config.NEW_BLOCK_ETH,
-    ALL_PROCESSES: zookeeperConfig.config.ALL_PROCESSES,
-    ETH_ERROR_LOGS: zookeeperConfig.config.ETH_ERROR_LOGS,
-    NODE_ALERT_ETH: zookeeperConfig.config.NODE_ALERT_ETH,
-    SPECIFIC_BLOCK_ETH: zookeeperConfig.config.SPECIFIC_BLOCK_ETH
+    ETH_BLOCKS: `${name}_${AwsSecretManagerConfig.config.SERVER}_${AwsSecretManagerConfig.config.ETH_BLOCKS} `,
+    OLD_BLOCK_ETH: AwsSecretManagerConfig.config.OLD_BLOCK_ETH,
+    NEW_BLOCK_ETH: AwsSecretManagerConfig.config.NEW_BLOCK_ETH,
+    ALL_PROCESSES: AwsSecretManagerConfig.config.ALL_PROCESSES,
+    ETH_ERROR_LOGS: AwsSecretManagerConfig.config.ETH_ERROR_LOGS,
+    NODE_ALERT_ETH: AwsSecretManagerConfig.config.NODE_ALERT_ETH,
+    SPECIFIC_BLOCK_ETH: AwsSecretManagerConfig.config.SPECIFIC_BLOCK_ETH
   },
 
   /**
    * ERC 20 Tokens standard ABI
    */
   TRANSACTIONS: {
-    eth_behined_transactions: zookeeperConfig.config.eth_behined_transactions,
-    eth_all_blocks: zookeeperConfig.config.eth_all_blocks,
-    eth_transaction_consumer_count: zookeeperConfig.config.eth_transaction_consumer_count
+    eth_behined_transactions: AwsSecretManagerConfig.config.eth_behined_transactions,
+    eth_all_blocks: AwsSecretManagerConfig.config.eth_all_blocks,
+    eth_transaction_consumer_count: AwsSecretManagerConfig.config.eth_transaction_consumer_count
   },
   MAILGUN: {
-    MAILGUN_API_KEY: zookeeperConfig.config.MAILGUN_API_KEY,
-    MAILGUN_DOMAIN: zookeeperConfig.config.MAILGUN_DOMAIN,
-    MAILGUN_BASE_URL: zookeeperConfig.config.MAILGUN_BASE_URL,
-    FROM_GMAIL: zookeeperConfig.config.FROM_GMAIL
+    MAILGUN_API_KEY: AwsSecretManagerConfig.config.MAILGUN_API_KEY,
+    MAILGUN_DOMAIN: AwsSecretManagerConfig.config.MAILGUN_DOMAIN,
+    MAILGUN_BASE_URL: AwsSecretManagerConfig.config.MAILGUN_BASE_URL,
+    FROM_GMAIL: AwsSecretManagerConfig.config.FROM_GMAIL
   },
   NODE: {
-    BNB_RPC_URL: zookeeperConfig.config.BNB_RPC_URL,
-    ETH_RPC_URL: zookeeperConfig.config.ETH_RPC_URL,
-    BTC_RPC_URL: zookeeperConfig.config.BTC_RPC_URL,
-    BTC_API_KEY: zookeeperConfig.config.BTC_API_KEY,
-    TRX_RPC_URL: zookeeperConfig.config.TRX_RPC_URL,
-    TRX_API_KEY: zookeeperConfig.config.TRX_API_KEY
+    BNB_RPC_URL: AwsSecretManagerConfig.config.BNB_RPC_URL,
+    ETH_RPC_URL: AwsSecretManagerConfig.config.ETH_RPC_URL,
+    BTC_RPC_URL: AwsSecretManagerConfig.config.BTC_RPC_URL,
+    BTC_API_KEY: AwsSecretManagerConfig.config.BTC_API_KEY,
+    TRX_RPC_URL: AwsSecretManagerConfig.config.TRX_RPC_URL,
+    TRX_API_KEY: AwsSecretManagerConfig.config.TRX_API_KEY
   },
-  NODE_ISSUE_ALERT_EMAIL: zookeeperConfig.config.NODE_ISSUE_ALERT_EMAIL,
-  READ_BEHINED_BLOCK_ETH: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.READ_BEHINED_BLOCK_ETH}`,
-  BLOCKS: zookeeperConfig.config.BLOCKS,
-  BACKEND_WALLET_ADDRESSES: zookeeperConfig.config.BACKEND_WALLET_ADDRESSES,
+  NODE_ISSUE_ALERT_EMAIL: AwsSecretManagerConfig.config.NODE_ISSUE_ALERT_EMAIL,
+  READ_BEHINED_BLOCK_ETH: `${name}_${AwsSecretManagerConfig.config.SERVER}_${AwsSecretManagerConfig.config.READ_BEHINED_BLOCK_ETH}`,
+  BLOCKS: AwsSecretManagerConfig.config.BLOCKS,
+  BACKEND_WALLET_ADDRESSES: AwsSecretManagerConfig.config.BACKEND_WALLET_ADDRESSES,
 
   CONTRACT_ABI: [
     {

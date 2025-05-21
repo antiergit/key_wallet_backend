@@ -636,6 +636,66 @@ class UserController implements OnlyControllerInterface {
       });
     }
   }
+
+
+  public async getTransactionStatus(req: Request, res: Response) {
+    let lang: any = req.headers['content-language'] || 'en';
+    try {
+      let transaction = await userhelper.get_confirmation_status(req.body.txid, req.body.coin_symbol)
+      return res.status(GlblCode.SUCCESS).send({
+        status: true,
+        code: GlblCode.SUCCESS,
+        message: language[lang].SUCCESS,
+        data: transaction
+      });
+    } catch (error) {
+      return response.error(res, {
+        data: {
+          code: GlblCode.ERROR_CODE,
+          status: false,
+          message: language[lang].CATCH_MSG
+        }
+      });
+    }
+  }
+
+  public async get_balnce_of_tokens(req: Request, res: Response) {
+    let lang: any = req.headers['content-language'] || 'en';
+    try {
+      const { address,coin_family }: { address: string,coin_family:any  } = req.body;
+      let addressValidity: any = await global_helper.validate_address(address, coin_family);
+      if (!addressValidity) throw new Error(`${language[lang].INVALID_ADDRESS}`);
+
+      let coinData: any = await coin_queries.coin_find_one(["coin_id", "coin_family", "coin_symbol", "is_token", "token_address", "token_type"], { coin_family: coin_family, is_token: 0 })
+
+      if(coinData){
+          // balance of coin
+          let balDetails: any = await global_helper.get_wallet_balance(coinData, address);
+          let balance: string = "0";
+          if (balDetails.status) {
+              balance = balDetails.balance;
+          }
+
+          return res.status(GlblCode.SUCCESS).send({
+            status: true,
+            code: GlblCode.SUCCESS,
+            message: language[lang].SUCCESS,
+            data: balance
+          });
+
+        }
+
+    
+    } catch (error) {
+      return response.error(res, {
+        data: {
+          code: GlblCode.ERROR_CODE,
+          status: false,
+          message: language[lang].CATCH_MSG
+        }
+      });
+    }
+  }
 }
 
 export const userController = new UserController();

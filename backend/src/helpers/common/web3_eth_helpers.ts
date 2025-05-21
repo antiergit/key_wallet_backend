@@ -93,6 +93,39 @@ class EthWeb3 {
       throw err;
     }
   }
+
+  public async get_confirmed_trnx(tx_id: string) {
+    try {
+      console.log("transaction id eth >>>>>>>>>>>>>>>>>>>", tx_id)
+      const { getTransaction, getTransactionReceipt } = this.web3.eth;
+      let transaction: any = await getTransaction(tx_id);
+      let transactionReceipt: any = await getTransactionReceipt(tx_id);
+      if (transaction.blockNumber) {
+        console.log("eth transaction.blockNumber")
+        if (transactionReceipt) {
+          if (transactionReceipt.status && transaction.blockHash != null) {
+            console.log("transactionReceipt.status && transaction.blockHash != null>>>")
+            return { status: true }
+
+          } else {
+            console.log(" not transactionReceipt.status && transaction.blockHash != null>>>")
+            return { status: false }
+          }
+
+        } else {
+          console.log("eth transaction receipt not found")
+          return { status: false }
+        }
+      } else {
+        console.log("eth no transaction.blockNumber")
+        return { status: false }
+      }
+    } catch (err: any) {
+      console.error("err eth_get_confirmed_trnx", err)
+      await commonHelper.save_error_logs("err eth_get_confirmed_trnx", err.message);
+      return { status: false }
+    }
+  }
 }
 
 export const ethWeb3 = new EthWeb3();

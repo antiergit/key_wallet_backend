@@ -1,64 +1,65 @@
-import zookeeperConfig from "../helpers/zookeeper.helper";
+import AwsSecretManagerConfig from "../helpers/awsSecrets.config";
+// import zookeeperConfig from "../helpers/zookeeper.helper";
 const name = 'novatide';
 export const config = {
-  DB_USER: zookeeperConfig.config.DB_USER,
-  DB_HOST_READ: zookeeperConfig.config.DB_HOST_READ,
-  DB_HOST_WRITE: zookeeperConfig.config.DB_HOST_WRITE,
-  DB_NAME: zookeeperConfig.config.DB_NAME,
-  DB_PASSWORD: zookeeperConfig.config.DB_PASSWORD,
-  DB_PORT: zookeeperConfig.config.DB_PORT,
-  DEPOSIT_WITHDRAW_PROCESS_BSC: zookeeperConfig.config.DEPOSIT_WITHDRAW_PROCESS_BSC,
-  BSC_WALLET_ADDRESS: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.BSC_WALLET_ADDRESS}`,
-  PENDING_WITHDRAWAL_TX_PROCESS_BSC: zookeeperConfig.config.PENDING_WITHDRAWAL_TX_PROCESS_BSC,
-  RABBIT_MQ: zookeeperConfig.config.RABBIT_MQ_CONN,
-  REDIS_CONN: zookeeperConfig.config.REDIS_CONN,
-  MIN_BLOCK_CONFORMATIONS: zookeeperConfig.config.BSC_MIN_BLOCK_CONFORMATIONS,
-  TOKEN_TYPE_BSC: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TOKEN_TYPE_BSC}`,
-  TOKEN_TYPE721_BSC: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.TOKEN_TYPE721_BSC}`,
-  STATIC_COIN_FAMILY: zookeeperConfig.config.STATIC_COIN_FAMILY,
-  PUSH_NOTIFICATION_QUEUE: zookeeperConfig.config.PUSH_NOTIFICATION_QUEUE,
+  DB_USER: AwsSecretManagerConfig.config.DB_USER,
+  DB_HOST_READ: AwsSecretManagerConfig.config.DB_HOST_READ,
+  DB_HOST_WRITE: AwsSecretManagerConfig.config.DB_HOST_WRITE,
+  DB_NAME: AwsSecretManagerConfig.config.DB_NAME,
+  DB_PASSWORD: AwsSecretManagerConfig.config.DB_PASSWORD,
+  DB_PORT: AwsSecretManagerConfig.config.DB_PORT,
+  DEPOSIT_WITHDRAW_PROCESS_BSC: AwsSecretManagerConfig.config.DEPOSIT_WITHDRAW_PROCESS_BSC,
+  BSC_WALLET_ADDRESS: `${name}_${AwsSecretManagerConfig.config.SERVER}_${AwsSecretManagerConfig.config.BSC_WALLET_ADDRESS}`,
+  PENDING_WITHDRAWAL_TX_PROCESS_BSC: AwsSecretManagerConfig.config.PENDING_WITHDRAWAL_TX_PROCESS_BSC,
+  RABBIT_MQ: AwsSecretManagerConfig.config.RABBIT_MQ_CONN,
+  REDIS_CONN: AwsSecretManagerConfig.config.REDIS_CONN,
+  MIN_BLOCK_CONFORMATIONS: AwsSecretManagerConfig.config.BSC_MIN_BLOCK_CONFORMATIONS,
+  TOKEN_TYPE_BSC: `${name}_${AwsSecretManagerConfig.config.SERVER}_${AwsSecretManagerConfig.config.TOKEN_TYPE_BSC}`,
+  TOKEN_TYPE721_BSC: `${name}_${AwsSecretManagerConfig.config.SERVER}_${AwsSecretManagerConfig.config.TOKEN_TYPE721_BSC}`,
+  STATIC_COIN_FAMILY: JSON.parse(AwsSecretManagerConfig.config.STATIC_COIN_FAMILY.replace(/'/g, '"')),
+  PUSH_NOTIFICATION_QUEUE: AwsSecretManagerConfig.config.PUSH_NOTIFICATION_QUEUE,
   KEYS: {
-    FCM_PUSH: zookeeperConfig.config.FCM_PUSH
+    FCM_PUSH: AwsSecretManagerConfig.config.FCM_PUSH
   },
   REDISKEYS: {
-    BSC_BLOCKS: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.BSC_BLOCKS} `,
-    OLD_BLOCK_BSC: zookeeperConfig.config.OLD_BLOCK_BSC,
-    NEW_BLOCK_BSC: zookeeperConfig.config.NEW_BLOCK_BSC,
-    ALL_PROCESSES: zookeeperConfig.config.ALL_PROCESSES,
-    BSC_ERROR_LOGS: zookeeperConfig.config.BSC_ERROR_LOGS,
-    NODE_ALERT_BSC: zookeeperConfig.config.NODE_ALERT_BSC,
-    SPECIFIC_BLOCK_BSC: zookeeperConfig.config.SPECIFIC_BLOCK_BSC
+    BSC_BLOCKS: `${name}_${AwsSecretManagerConfig.config.SERVER}_${AwsSecretManagerConfig.config.BSC_BLOCKS} `,
+    OLD_BLOCK_BSC: AwsSecretManagerConfig.config.OLD_BLOCK_BSC,
+    NEW_BLOCK_BSC: AwsSecretManagerConfig.config.NEW_BLOCK_BSC,
+    ALL_PROCESSES: AwsSecretManagerConfig.config.ALL_PROCESSES,
+    BSC_ERROR_LOGS: AwsSecretManagerConfig.config.BSC_ERROR_LOGS,
+    NODE_ALERT_BSC: AwsSecretManagerConfig.config.NODE_ALERT_BSC,
+    SPECIFIC_BLOCK_BSC: AwsSecretManagerConfig.config.SPECIFIC_BLOCK_BSC
   },
 
   // added till now
   NODE: {
-    ETH_RPC_URL: zookeeperConfig.config.ETH_RPC_URL,
-    BTC_RPC_URL: zookeeperConfig.config.BTC_RPC_URL,
-    BTC_API_KEY: zookeeperConfig.config.BTC_API_KEY,
-    TRX_RPC_URL: zookeeperConfig.config.TRX_RPC_URL,
-    TRX_API_KEY: zookeeperConfig.config.TRX_API_KEY,
-    BNB_RPC_URL: zookeeperConfig.config.BNB_RPC_URL
+    ETH_RPC_URL: AwsSecretManagerConfig.config.ETH_RPC_URL,
+    BTC_RPC_URL: AwsSecretManagerConfig.config.BTC_RPC_URL,
+    BTC_API_KEY: AwsSecretManagerConfig.config.BTC_API_KEY,
+    TRX_RPC_URL: AwsSecretManagerConfig.config.TRX_RPC_URL,
+    TRX_API_KEY: AwsSecretManagerConfig.config.TRX_API_KEY,
+    BNB_RPC_URL: AwsSecretManagerConfig.config.BNB_RPC_URL
   },
 
   /**
    * ERC 20 Tokens standard ABI
    */
   TRANSACTIONS: {
-    bsc_all_blocks: zookeeperConfig.config.bsc_all_blocks,
-    bsc_behined_transactions: zookeeperConfig.config.bsc_behined_transactions,
-    bsc_transaction_consumer_count: zookeeperConfig.config.bsc_transaction_consumer_count
+    bsc_all_blocks: AwsSecretManagerConfig.config.bsc_all_blocks,
+    bsc_behined_transactions: AwsSecretManagerConfig.config.bsc_behined_transactions,
+    bsc_transaction_consumer_count: AwsSecretManagerConfig.config.bsc_transaction_consumer_count
   },
   MAILGUN: {
-    MAILGUN_API_KEY: zookeeperConfig.config.MAILGUN_API_KEY,
-    MAILGUN_DOMAIN: zookeeperConfig.config.MAILGUN_DOMAIN,
-    MAILGUN_BASE_URL: zookeeperConfig.config.MAILGUN_BASE_URL,
-    FROM_GMAIL: zookeeperConfig.config.FROM_GMAIL
+    MAILGUN_API_KEY: AwsSecretManagerConfig.config.MAILGUN_API_KEY,
+    MAILGUN_DOMAIN: AwsSecretManagerConfig.config.MAILGUN_DOMAIN,
+    MAILGUN_BASE_URL: AwsSecretManagerConfig.config.MAILGUN_BASE_URL,
+    FROM_GMAIL: AwsSecretManagerConfig.config.FROM_GMAIL
 
   },
-  NODE_ISSUE_ALERT_EMAIL: zookeeperConfig.config.NODE_ISSUE_ALERT_EMAIL,
-  READ_BEHINED_BLOCK_BSC: `${name}_${zookeeperConfig.config.SERVER}_${zookeeperConfig.config.READ_BEHINED_BLOCK_BSC}`,
-  BLOCKS: zookeeperConfig.config.BLOCKS,
-  BACKEND_WALLET_ADDRESSES: zookeeperConfig.config.BACKEND_WALLET_ADDRESSES,
+  NODE_ISSUE_ALERT_EMAIL: AwsSecretManagerConfig.config.NODE_ISSUE_ALERT_EMAIL,
+  READ_BEHINED_BLOCK_BSC: `${name}_${AwsSecretManagerConfig.config.SERVER}_${AwsSecretManagerConfig.config.READ_BEHINED_BLOCK_BSC}`,
+  BLOCKS: AwsSecretManagerConfig.config.BLOCKS,
+  BACKEND_WALLET_ADDRESSES: AwsSecretManagerConfig.config.BACKEND_WALLET_ADDRESSES,
 
   CONTRACT_ABI: [
     {

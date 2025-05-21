@@ -138,6 +138,10 @@ let dataObj = {
     referral_upgrade_level: {
         type: DataTypes.STRING,
         allowNull: true
+    },
+    recipient_address :{
+        type: DataTypes.STRING,
+        allowNull: true
     }
 };
 

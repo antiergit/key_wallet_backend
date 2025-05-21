@@ -31,5 +31,8 @@ export interface ITrnxHistoryInterface {
     order_status: string | null;
     referral_upgrade_level: string | null;
     rocketx_request_id?: string | null;
+    changelly_order_id?: string | null;
+    to_coin_family?: number | null;
     // address_book_name: string
+    recipient_address?: string | null;
 }

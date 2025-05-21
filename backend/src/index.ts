@@ -16,6 +16,10 @@ import helmet from "helmet";
 import { encryptionMiddleware } from "./middlewares/encryption.middleware";
 import { ValidationError, Joi } from 'express-validation';
 import { GlblCode, GlblMessages, InfoMessages } from "./constants/global_enum";
+import ApiLimiter from "./middlewares/apiRateLimiter";
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
+const basicAuth = require('express-basic-auth');
 
 class Server implements ServerInterface {
   public app: express.Application;
@@ -61,8 +65,19 @@ class Server implements ServerInterface {
     );
     this.app.use(express.static(path.join(__dirname, 'public')))
     this.app.set('views', './views');
-   this.app.use(encryptionMiddleware);
+    this.app.use(encryptionMiddleware);
+    this.app.use(ApiLimiter);
     this.initializeControllers();
+
+    // Basic authentication middleware for Swagger UI
+    this.app.use('/KU8S5Ln7siecCst', basicAuth({
+      users: { 'dJVMRqXSW7i5c8G': '8o8qoWbnSG4FlZc' }, // Set your username and password here
+      challenge: true, // Shows the login prompt
+      unauthorizedResponse: 'Unauthorized access', // Response message if unauthorized
+    }));
+    this.app.use('/KU8S5Ln7siecCst', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+
     this.startServer();
     this.checkHealth();
 

@@ -14,14 +14,10 @@ class ChangellyRoute implements ControllerInterface {
   }
 
   public initializeRoutes() {
-
     /** Not used */
 
     // Cross - chain
-    this.router.get(
-      `${this.path}/:fx`,
-      changellyController.getChangellyData
-    );
+    this.router.get(`${this.path}/:fx`, changellyController.getChangellyData);
 
     // On - Off Ramp
     this.router.get(
@@ -48,6 +44,13 @@ class ChangellyRoute implements ControllerInterface {
     );
 
     this.router.post(
+      `${this.path}/v2/coins_newOne`,
+      //[validate(changellyValidator.coins)],
+      jwtVerification.verifyToken,
+      changellyController.changellySupportedCrossChainCoins2_newOne
+    );
+
+    this.router.post(
       `${this.path}/minAmount`,
       [validate(changellyValidator.minAmount)],
       jwtVerification.verifyToken,
@@ -58,6 +61,18 @@ class ChangellyRoute implements ControllerInterface {
       [validate(changellyValidator.createTransaction)],
       jwtVerification.verifyToken,
       changellyController.createTransaction
+    );
+
+    this.router.post(
+      `${this.path}/getStatus`,
+      jwtVerification.verifyToken,
+      changellyController.getStatus
+    );
+
+    this.router.post(
+      `${this.path}/getTransactions`,
+      jwtVerification.verifyToken,
+      changellyController.getTransactions
     );
 
     // On - Off Ramp
@@ -74,7 +89,6 @@ class ChangellyRoute implements ControllerInterface {
       jwtVerification.verifyToken,
       changellyController.onOffRampListing2
     );
-
 
     this.router.post(
       `${this.path}/OnOffRamp/getOffers`,

@@ -13,9 +13,27 @@ import { bscWeb3 } from "./web3.bsc_helper";
 import { URL as _URL, URLSearchParams as _URLSearchParams } from "url";
 import { bsc_matcha_helper } from "../../modules/matcha/bscMatchaHelper";
 import { eth_matcha_helper } from "../../modules/matcha/ethMatchHelper";
+import rabbitMq from "./rabbitMq";
 
 
 class Global_helper {
+    getError(error: any) {
+        if (error.response) {
+            // The request was made and the server responded with a status code
+            // that falls out of the range of 2xx
+            console.log("error.response.data.message: ", error.response.data);
+            return error.response.data.message
+            // This will print: 'You run out of money. Top up your wallet.'
+        } else if (error.request) {
+            // The request was made but no response was received
+            console.error("error.request: ", error.request);
+            return error.request
+        } else {
+            // Something happened in setting up the request that triggered an Error
+            console.error('Error: ', error.message);
+            return error.message
+        }
+    }
 
     public async swapSupportedByMatcha(tokenAddress: string, coinFamily: number, swapData: any) {
         try {
@@ -248,6 +266,104 @@ class Global_helper {
             return false;
         }
     }
+    public async SendNotification(data: any) {
+        try {
+            let toUserId: number = data.to_user_id ? data.to_user_id : 0;
+            
+            // Get user device tokens
+            let userData: any = await Models.UsersModel.findOne({
+                where: { user_id: toUserId },
+                include: [
+                    {
+                        model: Models.DeviceTokenModel,
+                        as: 'user_device_token_data',
+                        where: { push: 1 },
+                        required: false
+                    }
+                ]
+            });
+            
+            let device_tokens: any = [];
+            
+            // Check if user_device_token_data exists and is an array
+            if (userData && userData.user_device_token_data && Array.isArray(userData.user_device_token_data)) {
+                device_tokens = device_tokens.concat(userData.user_device_token_data.map((item: any) => item.device_token));
+            }
+            
+            // // Check if notification already exists
+            // const checkOldNotif: any = await Models.NotificationModel.count({
+            //     where: {
+            //         to_user_id: toUserId,
+            //         notification_type: data.notification_type,
+            //         tx_id: data.tx_id,
+            //         tx_type: data.tx_type
+            //     }
+            // });
+            
+           // if (checkOldNotif === 0) {
+                // Create notification in database
+                let notificationData: any = {
+                    message: data.message,
+                    amount: data.amount,
+                    from_user_id: data.from_user_id ? data.from_user_id : 0,
+                    to_user_id: toUserId,
+                    notification_type: data.notification_type,
+                    tx_id: data.tx_id,
+                    tx_type: data.tx_type,
+                    coin_symbol: data.coin_symbol,
+                    coin_id: data.coin_id,
+                    view_status: 0,
+                    state: data.state || "0",
+                    wallet_address: data.wallet_address,
+                    created_at: new Date(),
+                    updated_at: new Date()
+                };
+                
+                await Models.NotificationModel.create(notificationData);
+           // }
+            
+            // Send push notification if device tokens exist
+            if (device_tokens && device_tokens.length > 0) {
+                let message = {
+                    tokens: device_tokens,
+                    collapse_key: "type_a",
+                    notification: {
+                        title: data.title,
+                        body: data.message
+                    },
+                    data: {
+                        body: data.message ? (data.message).toString() : "",
+                        title: data.title ? (data.title).toString() : "",
+                        notification_type: data.notification_type ? (data.notification_type).toString() : "",
+                        tx_id: data.tx_id ? (data.tx_id).toString() : "",
+                        tx_type: data.tx_type ? (data.tx_type).toString() : "",
+                        from_user_id: data.from_user_id ? (data.from_user_id).toString() : "",
+                        user_coin_id: data.coin_id ? (data.coin_id).toString() : "",
+                    },
+                };
+                
+                // Add to notification queue
+                await this.addingCoinsToQueue(config.PUSH_NOTIFICATION_QUEUE, message);
+            }
+            
+            return true;
+        } catch (error: any) {
+            console.error(`SendNotification error >>>`, error);
+            return false;
+        }
+    }
+    
+    public async addingCoinsToQueue(queueName: string, data: any) {
+        try {
+            await rabbitMq.assertQueue(queueName);
+            await rabbitMq.sendToQueue(queueName, Buffer.from(JSON.stringify(data)));
+            return true;
+        } catch (err: any) {
+            console.error("Error in addingCoinsToQueue>>>", err);
+            return false;
+        }
+    }
+
     public async get_coin_family_from_blockchain(coin: string) {
         try {
             let coin_family: number = 0

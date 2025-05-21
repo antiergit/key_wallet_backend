@@ -5,6 +5,7 @@ import { blocks_trnx } from '../interface/index';
 import { TronOldBLockModel } from '../models/model';
 import tronProcessHelper from './processes.helper';
 import { KEYS } from '../enum/index';
+import { Op } from "sequelize";
 class Process_Blocks {
    public minBlockConfirmation: number = config.MIN_BLOCK_CONFIRMATIONS_TRON;
    public tron_blocks: string = config.REDISKEYS.TRON_BLOCKS;
@@ -93,16 +94,16 @@ class Process_Blocks {
    public async getTxFromBlock(block_number: number, key: string) {
       try {
          const getBlock = await Blockchain_Helper.tronWeb.trx.getBlock(block_number);
-            // console.log("getBlock::",getBlock);
+         // console.log("getBlock::",getBlock);
          const blockInfo: any = getBlock.transactions;
-       
+
          if (!getBlock.transactions) return;
 
          for await (let transactions of blockInfo) {
 
             let data: blocks_trnx = {
                block_number: block_number,
-               tx_id: transactions.txID,
+               tx : transactions,
                retry_count: 0,
                key: null,
                pair: null
@@ -112,19 +113,34 @@ class Process_Blocks {
                data.key = 'latest'
                // let queue_length: any = await RabbitMq.queue_length(this.tron_all_blocks)
                // console.log("queue_length>>>", queue_length)
-               console.log("latest added to queue block>>", data.block_number, "tx_id>>", data.tx_id)
+               // console.log("latest added to queue block>>", data.block_number, "tx_id>>", data.tx_id)
                await RabbitMq.send_tx_to_queue(this.tron_all_blocks, Buffer.from(JSON.stringify(data)))
 
             } else {
                data.key = 'behined & specific'
-               console.log("behined added to queue block>>", data.block_number, "tx_id>>", data.tx_id)
+               // console.log("behined added to queue block>>", data.block_number, "tx_id>>", data.tx_id)
                await RabbitMq.send_tx_to_queue(this.tron_behined_transactions, Buffer.from(JSON.stringify(data)))
             }
          }
       } catch (err: any) {
          console.error(`error in getTxFromBlock error >>>`, err);
-         await TronOldBLockModel.create({ block_number: block_number, coin_family: this.tron_coin_family, start_block: block_number, end_block: block_number, status: 0 })
-         // await global_helper.save_error_logs('TRON_getTxFromBlock', err.message)
+         // Check if block_number exists in either start_block or end_block
+         const existingBlock = await TronOldBLockModel.findOne({
+            where: {
+               [Op.and]: [{ start_block: block_number }, { end_block: block_number }]
+            }
+         });
+
+         // Only create a new entry if it does not already exist
+         if (!existingBlock) {
+            await TronOldBLockModel.create({
+               block_number: block_number,
+               coin_family: this.tron_coin_family,
+               start_block: block_number,
+               end_block: block_number,
+               status: 0
+            });
+         }
          await node_issue_error_log_queries.node_issue_error_logs_create({
             function: "getTxFromBlock",
             block_number: block_number.toString(),

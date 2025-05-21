@@ -68,7 +68,7 @@ class MatchaHelper {
 
       return response;
     } catch (error) {
-      console.error("Error fetching price:", error);
+      console.error("Error fetching price:", JSON.stringify(error));
       throw error;
     }
   }

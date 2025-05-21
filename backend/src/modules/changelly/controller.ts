@@ -8,6 +8,7 @@ import { changellyDetailsQueries, changellyOnOffRampOrdersQueries, changellySupp
 import { Op } from "sequelize";
 import { config } from "../../config";
 import { global_helper } from "../../helpers/common/global_helper";
+import { GlblBooleanEnum } from "../../constants/global_enum";
 
 class ChangellyController implements OnlyControllerInterface {
     constructor() {
@@ -174,9 +175,11 @@ class ChangellyController implements OnlyControllerInterface {
         }
     }
 
+  
+
     public async changellySupportedCrossChainCoins2(req: Request, res: Response) {
         const lang = req.headers["content-language"] || "en";
-        let { search, coinFamily, getPairsFor, fiatType, addressListKeys, selectedCoinId, isChangellyCoin }: { search: string, coinFamily: number, getPairsFor: string, fiatType: string, addressListKeys: any, selectedCoinId: any, isChangellyCoin:boolean } = req.body;
+        let { search, coinFamily, getPairsFor, fiatType, addressListKeys, selectedCoinId, isChangellyCoin }: {search: string, coinFamily: number, getPairsFor: string, fiatType: string, addressListKeys: any, selectedCoinId: any, isChangellyCoin: boolean } = req.body;
 
         try {
             console.log("req body changelly changellySupportedCrossChainCoins >>>", req.body);
@@ -225,7 +228,7 @@ class ChangellyController implements OnlyControllerInterface {
                     { full_name: { [Op.like]: search } }
                 ];
             }
-
+           
             // Fetch data from both queries
             let changellyData: any = await coin_queries.coinsJoinCoinPriceInFiatJoinChangellyJoinWallet(
                 ["coin_id", "coin_name", "coin_symbol", "coin_image", "coin_family", "is_token", "token_type", "decimals", "token_address"],
@@ -242,7 +245,8 @@ class ChangellyController implements OnlyControllerInterface {
                 ],
                 whereClause,
                 ["wallet_id", "coin_id", "balance", "wallet_address"],
-                { wallet_address: { [Op.in]: addressListKeys }, status: 1 }
+                { wallet_address: { [Op.in]: addressListKeys }, status: 1 },
+               
             );
 
             let rocketxData: any = await coin_queries.coinsJoinCoinPriceInFiatJoinRocketxJoinWallet(
@@ -257,7 +261,7 @@ class ChangellyController implements OnlyControllerInterface {
                 ],
                 whereClause2,
                 ["wallet_id", "coin_id", "balance", "wallet_address"],
-                { wallet_address: { [Op.in]: addressListKeys }, status: 1 }
+                { wallet_address: { [Op.in]: addressListKeys }, status: 1 },
             );
 
             // Merging data without checking uniqueness, as you requested
@@ -275,8 +279,8 @@ class ChangellyController implements OnlyControllerInterface {
             });
 
             if (selectedCoinId) {
-                mergedData = mergedData.filter((item: any) => item.coin_id !== selectedCoinId);
-            }            
+                changellyData = changellyData.filter((item: any) => item.coin_id !== selectedCoinId);
+            }
 
             // Return raw merged data
             return response.success(res, {
@@ -316,14 +320,29 @@ class ChangellyController implements OnlyControllerInterface {
             }
             let headers: any = await changellyHelper.getHeader(payload);
             let responseData: any = await changellyHelper.getResponseData(payload, headers);
-            console.log("🚀 ~ ChangellyController ~ minAmount ~ responseData:", responseData)
+            console.log("🚀 ~ ChangellyController ~ minAmount ~ responseData before:", JSON.stringify(responseData.data))
+
+            if (responseData.data.result && Array.isArray(responseData.data.result) && responseData.data.result.length > 0) {
+                const result = responseData.data.result[0];
+
+                const visibleAmount = parseFloat(result.visibleAmount);
+                const fee = parseFloat(result.fee);
+                const networkFee = parseFloat(result.networkFee);
+
+                // Update the `amountTo` property
+                result.amountTo = (visibleAmount - fee - networkFee).toFixed(6);
+            } else {
+                console.error("Error:", responseData.data.error?.message || "Unexpected response format");
+            }
+
+            console.log("🚀 ~ ChangellyController ~ minAmount ~ responseData after:", JSON.stringify(responseData.data))
 
             if (responseData?.data?.error?.message?.includes("Invalid amount for pair")) {
                 console.log("Getting Error Invalid amount for pair");
-                 //let errMsg: string = language[lang].CHANGE_MIN_AMOUNT(responseData?.data?.error?.data?.limits?.min?.from, fromCryptoSymbol);
+                //let errMsg: string = language[lang].CHANGE_MIN_AMOUNT(responseData?.data?.error?.data?.limits?.min?.from, fromCryptoSymbol);
                 let errMsg: string;
                 const errorMessage = responseData?.data?.error?.message;
-              
+
                 if (errorMessage?.includes("Maximum amount")) {
                     const maxAmount = responseData?.data?.error?.data?.limits?.max?.from;
                     errMsg = language[lang].CHANGE_MAX_AMOUNT(maxAmount, fromCryptoSymbol);
@@ -381,7 +400,7 @@ class ChangellyController implements OnlyControllerInterface {
             await commonHelper.save_error_logs("minAmount", err.message);
             return response.error(res, {
                 data: {
-                    message: language[lang].CATCH_MSG,
+                    message: global_helper.getError(err) || language[lang].CATCH_MSG,
                 },
             });
         }
@@ -550,14 +569,16 @@ class ChangellyController implements OnlyControllerInterface {
             console.log("path == ", path)
 
             let headers: any = await changellyHelper.getHeaderOfOnOffRamp(path, {});
-            // console.log("Headers == ", headers)
+            console.log("Headers == ", headers)
 
             let responseData: any = await changellyHelper.getResponseDataOfOnOffRamp(headers, path, 'get', {});
+            console.log("🚀 ~ ChangellyController ~ onOffRampGetOffers ~ responseData:", responseData)
             let providersList: any = await changellySupportedProvidersQueries.changellySupportedProvidersFindAll(
                 ['id', 'code', 'name', 'trust_pilot_rating', 'icon_url'],
                 { status: 1 },
                 [['id', 'ASC']]
             )
+            console.log("🚀 ~ ChangellyController ~ onOffRampGetOffers ~ providersList:", providersList)
             return response.success(res, {
                 data: {
                     success: true,
@@ -689,6 +710,258 @@ class ChangellyController implements OnlyControllerInterface {
         } catch (err: any) {
             console.error("Error in webhook:", err.message);
             await commonHelper.save_error_logs("webhook", err.message);
+            return response.error(res, {
+                data: {
+                    message: language[lang].CATCH_MSG,
+                },
+            });
+        }
+    }
+
+
+    public async getStatus(req: Request, res: Response) {
+        const lang = req.headers["content-language"] || "en";
+        let { id }: { id: String } = req.body;
+        try {
+            console.log("req body changelly getStatus >>>", req.body)
+            console.log("Entered into getStatus")
+            let payload: any = {
+                jsonrpc: "2.0",
+                id: "test",
+                method: "getStatus",
+                params: {
+                    id: id
+                }
+            }
+            let headers: any = await changellyHelper.getHeader(payload);
+            let responseData: any = await changellyHelper.getResponseData(payload, headers);
+
+            if (responseData?.data?.error) {
+                console.log("Received different error:", responseData.data.error.message);
+                return response.error(res, {
+                    data: {
+                        message: responseData.data.error.message,
+                        data: responseData?.data
+                    },
+                });
+            }
+
+            return response.success(res, {
+                data: {
+                    success: true,
+                    message: language[lang].SUCCESS,
+                    data: responseData.data
+                }
+            });
+        } catch (err: any) {
+            console.error("Error in getStatus:", err.message);
+            await commonHelper.save_error_logs("getStatus", err.message);
+            return response.error(res, {
+                data: {
+                    message: language[lang].CATCH_MSG,
+                },
+            });
+        }
+    }
+
+    public async getTransactions(req: Request, res: Response) {
+        const lang = req.headers["content-language"] || "en";
+        let { id }: { id: String } = req.body;
+        try {
+            console.log("req body changelly getTransactions >>>", req.body)
+            console.log("Entered into getTransactions")
+            let payload: any = {
+                jsonrpc: "2.0",
+                id: "test",
+                method: "getTransactions",
+                params: {
+                    id: id
+                }
+            }
+            let headers: any = await changellyHelper.getHeader(payload);
+            let responseData: any = await changellyHelper.getResponseData(payload, headers);
+
+            if (responseData?.data?.error) {
+                console.log("Received different error:", responseData.data.error.message);
+                return response.error(res, {
+                    data: {
+                        message: responseData.data.error.message,
+                        data: responseData?.data
+                    },
+                });
+            }
+
+            return response.success(res, {
+                data: {
+                    success: true,
+                    message: language[lang].SUCCESS,
+                    data: responseData.data
+                }
+            });
+        } catch (err: any) {
+            console.error("Error in getTransactions:", err.message);
+            await commonHelper.save_error_logs("getTransactions", err.message);
+            return response.error(res, {
+                data: {
+                    message: language[lang].CATCH_MSG,
+                },
+            });
+        }
+    }
+
+    public async changellySupportedCrossChainCoins2_newOne(req: Request, res: Response) {
+        const lang = req.headers["content-language"] || "en";
+        let { page,limit,search, coinFamily, getPairsFor, fiatType, addressListKeys, selectedCoinId, isChangellyCoin,balance }: {page: number | string,limit: number | string, search: string, coinFamily: number, getPairsFor: string, fiatType: string, addressListKeys: any, selectedCoinId: any, isChangellyCoin: boolean, balance?: boolean  } = req.body;
+
+        try {
+            console.log("req body changelly changellySupportedCrossChainCoins >>>", req.body);
+            console.log("Entered into changellySupportedCrossChainCoins");
+
+            let whereClause: any = { status: 1, coin_id: { [Op.not]: null } };
+            let whereClause2: any = { coin_id: { [Op.not]: null } };
+
+            if (getPairsFor && isChangellyCoin) {
+                // Get Data from Third Party
+                try {
+                    let payload: any = {
+                        jsonrpc: "2.0",
+                        id: "test",
+                        method: "getPairs",
+                        params: {
+                            from: getPairsFor.toLowerCase(),
+                            txType: "fixed", // fixed, float
+                        }
+                    };
+                    let headers: any = await changellyHelper.getHeader(payload);
+                    let responseData: any = await changellyHelper.getResponseData(payload, headers);
+                    let toValues: any = responseData.data.result.map((item: any) => item.to);
+
+                    whereClause.ticker = { [Op.in]: toValues };
+                    whereClause.enabled_to = "true";
+                } catch (err: any) {
+                    console.error("Error in changellySupportedCrossChainCoins From Third Party:", err.message);
+                    await commonHelper.save_error_logs("changellySupportedCrossChainCoins Third Party", err.message);
+                    return response.error(res, {
+                        data: {
+                            message: language[lang].CATCH_MSG,
+                        },
+                    });
+                }
+            } else {
+                whereClause.enabled_from = "true";
+            }
+
+            if (coinFamily) { whereClause.coin_family = coinFamily }
+            if (search) {
+                search = `%${search}%`;
+                whereClause[Op.or] = [
+                    { name: { [Op.like]: search } },
+                    { ticker: { [Op.like]: search } },
+                    { full_name: { [Op.like]: search } }
+                ];
+            }
+
+            // if (balance === true) {
+            //     // walletJoinRequired = true;
+            //     whereClause3 = {
+            //       wallet_address: { [Op.in]: addressListKeys },
+            //       status: 1,
+            //     };
+            // }
+            let pageNo: any = parseInt(page as string) || GlblBooleanEnum.true;
+            let limitNo: any = parseInt(limit as string) || 10;
+            let offset: number = GlblBooleanEnum.false;
+            if (pageNo != GlblBooleanEnum.true) {
+              offset = (pageNo - GlblBooleanEnum.true) * limitNo;
+            }
+            let changellyData:any
+            // Fetch data from both queries
+            let walletRequred=false;
+            if (balance == true) {
+                walletRequred=true;
+
+                changellyData = await coin_queries.coinsJoinCoinPriceInFiatJoinChangellyJoinWallet_newOne(
+                    ["coin_id", "coin_name", "coin_symbol", "coin_image", "coin_family", "is_token", "token_type", "decimals", "token_address"],
+                    { coin_status: 1 },
+                    ["id", "value", "price_change_24h", "price_change_percentage_24h"],
+                    { fiat_type: fiatType },
+                    [
+                        'id', 'name', 'status', 'coin_id', ['coin_family', 'coinFamily'], ['is_token', 'isToken'], 'ticker',
+                        ['full_name', 'fullName'], 'enabled', ['enabled_from', 'enabledFrom'], ['enabled_to', 'enabledTo'],
+                        ['fix_rate_enabled', 'fixRateEnabled'], ['payin_confirmations', 'payinConfirmations'],
+                        ['address_url', 'AddressUrl'], ['transaction_url', 'transactionUrl'], 'image',
+                        ['fixed_time', 'fixedTime'], ['contract_address', 'contractAddress'], 'protocol', 'blockchain',
+                        ['blockchain_precision', 'blockchainPrecision'], 'created_at', 'updated_at'
+                    ],
+                    whereClause,
+                    [
+                        'id', 'rocketx_id', 'token_name', 'token_symbol', 'coin_id', 'rocketx_coin_id', 'icon_url', 'enabled',
+                        'score', 'is_custom', 'is_native_token', 'contract_address', 'network_id', 'token_decimals',
+                        'chain_id', 'walletless_enabled', 'buy_enabled', 'sell_enabled', 'created_at', 'updated_at'
+                    ],
+                    whereClause2,
+                    ["wallet_id", "coin_id", "balance", "wallet_address"],
+                    { wallet_address: { [Op.in]: addressListKeys }, status: 1 },
+                    limitNo,
+                    offset,
+                    walletRequred
+                );
+                
+            }
+            else{
+
+                changellyData = await coin_queries.coinsJoinCoinPriceInFiatJoinChangellyJoinWallet_newOne(
+                    ["coin_id", "coin_name", "coin_symbol", "coin_image", "coin_family", "is_token", "token_type", "decimals", "token_address"],
+                    { coin_status: 1 },
+                    ["id", "value", "price_change_24h", "price_change_percentage_24h"],
+                    { fiat_type: fiatType },
+                    [
+                        'id', 'name', 'status', 'coin_id', ['coin_family', 'coinFamily'], ['is_token', 'isToken'], 'ticker',
+                        ['full_name', 'fullName'], 'enabled', ['enabled_from', 'enabledFrom'], ['enabled_to', 'enabledTo'],
+                        ['fix_rate_enabled', 'fixRateEnabled'], ['payin_confirmations', 'payinConfirmations'],
+                        ['address_url', 'AddressUrl'], ['transaction_url', 'transactionUrl'], 'image',
+                        ['fixed_time', 'fixedTime'], ['contract_address', 'contractAddress'], 'protocol', 'blockchain',
+                        ['blockchain_precision', 'blockchainPrecision'], 'created_at', 'updated_at'
+                    ],
+                    whereClause,
+                    [
+                        'id', 'rocketx_id', 'token_name', 'token_symbol', 'coin_id', 'rocketx_coin_id', 'icon_url', 'enabled',
+                        'score', 'is_custom', 'is_native_token', 'contract_address', 'network_id', 'token_decimals',
+                        'chain_id', 'walletless_enabled', 'buy_enabled', 'sell_enabled', 'created_at', 'updated_at'
+                    ],
+                    whereClause2,
+                    ["wallet_id", "coin_id", "balance", "wallet_address"],
+                    { wallet_address: { [Op.in]: addressListKeys }, status: 1 },
+                    limitNo,
+                    offset,
+                    walletRequred
+                );
+
+            }
+        
+          
+            if (selectedCoinId) {
+                changellyData = changellyData.filter((item: any) => item.coin_id !== selectedCoinId);
+            }
+            console.log("----find count---",changellyData.count)
+            // Return raw merged data
+            return response.success(res, {
+                data: {
+                    success: true,
+                    message: language[lang].SUCCESS,
+                    data: changellyData,
+                    meta: {
+                        page: pageNo,
+                        pages: Math.ceil(changellyData.count / limitNo),
+                        perPage: limitNo,
+                        total: changellyData.count,
+                      },
+                }
+            });
+
+        } catch (err: any) {
+            console.error("Error in changellySupportedCrossChainCoins:", err.message);
+            await commonHelper.save_error_logs("changellySupportedCrossChainCoins", err.message);
             return response.error(res, {
                 data: {
                     message: language[lang].CATCH_MSG,

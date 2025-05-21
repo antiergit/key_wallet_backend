@@ -4,6 +4,7 @@ import confirmDepositProdProcess from './modules/prod_processes/confirm.deposit.
 import btcTxStatusUpdateProdProcess from './modules/prod_processes/confirm.withdraw.process';
 import btcPendingWithdrawalProdProcess from './modules/prod_processes/withdraw.process';
 import { config } from './config/config';
+
 class BTCStartProcess {
   constructor() {
     this.readBlocksProcess();

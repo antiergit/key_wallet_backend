@@ -1,4 +1,4 @@
-import { CoinFamily, Fiat_Currency, GlblBooleanEnum, GlblCode } from '../../constants/global_enum'
+import { CoinFamily, Fiat_Currency, GlblBooleanEnum, GlblCode, GlblCoins } from '../../constants/global_enum'
 import * as Models from './../../models/index'
 import { Messages } from './enum';
 import { Op, Sequelize } from 'sequelize';
@@ -10,6 +10,10 @@ import { config } from "../../config";
 import dbHelper, { wallet_queries, user_queries, coin_queries, device_token_queries, address_book_wallet_queries } from '../../helpers/dbHelper/index'
 import commonHelper from '../../helpers/common/common.helpers';
 import { language } from '../../constants';
+import { bscWeb3 } from "../../helpers/common/web3.bsc_helper";
+import { utxobtc } from "../../helpers/common/web3_btc_helpers";
+import { ethWeb3 } from "../../helpers/common/web3_eth_helpers";
+import { Tron_Helper } from "../tron/helper";
 
 
 // AWS.config.update({
@@ -434,6 +438,33 @@ class userHelper {
     //         return err;
     //     }
     // }
+
+    public async get_confirmation_status(tx_id: string, coin_symbol: string) {
+        try {
+            console.log("Entered into get_confirmation_status>>>", tx_id, "coin_symbol>>", coin_symbol)
+            switch (coin_symbol) {
+                case GlblCoins.BNB:
+                    console.log("bsc")
+                    return await bscWeb3.get_confirmed_trnx(tx_id)
+
+                case GlblCoins.ETH:
+                    console.log("eth")
+                    return await ethWeb3.get_confirmed_trnx(tx_id)
+
+                case GlblCoins.BTC:
+                    console.log("btc")
+                    return await utxobtc.get_confirmed_trnx(tx_id)
+
+                case GlblCoins.TRX:
+                    console.log("trx")
+                    return await Tron_Helper.GetConfirmedTransaction(tx_id);
+            }
+        } catch (err: any) {
+            console.error(`get_confirmation_status error >>`, err);
+            await commonHelper.save_error_logs("get_confirmation_status", err.message);
+            return { status: false, data: err };
+        }
+    }
 }
 
 const userhelper = new userHelper();

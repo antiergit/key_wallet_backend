@@ -103,64 +103,7 @@ class CoinQueries {
             return null;
         }
     }
-    public async coinsJoinCoinPriceInFiatJoinChangellyJoinWallet(
-        attr1: any, where1: any, attr2: any, where2: any, attr3: any, where3: any, attr4: any, where4: any) {
-        try {
-            let data: any = await Models.CoinsModel.findAll({
-                attributes: attr1,
-                where: where1,
-                include: [{
-                    model: Models.CoinPriceInFiatModel,
-                    as: "fiat_price_data",
-                    attributes: attr2,
-                    where: where2,
-                    required: false
-                }, {
-                    model: Models.ChangellySupportedCrossChainCoinsModel,
-                    attributes: attr3,
-                    where: where3,
-                    required: true,
-                    as: "coins_changelly_rel"
-                }, {
-                    model: Models.WalletModel,
-                    attributes: attr4,
-                    where: where4,
-                    required: false,
-                    as: "wallet_data",
-                },{
-                    model:Models.CoinsModel,
-                    attributes:['coin_id', 'coin_symbol', 'is_token'],
-                    where:{is_token:0},
-                    required:true,
-                    as:'native_coins_data',
-                    include: [{
-                        model: Models.CoinPriceInFiatModel,
-                        as: "fiat_price_data",
-                        attributes: attr2,
-                        where: where2,
-                        required: false
-                    }]
-                }],
-                order: [
-                    [Sequelize.literal(`
-                    CASE
-                    WHEN coins.coin_symbol ='bnb' THEN 1
-                    WHEN coins.coin_symbol ='eth' THEN 2
-                    WHEN coins.coin_symbol ='btc' THEN 3
-                    WHEN coins.coin_symbol ='trx' THEN 4
-                    ELSE 5
-                    END
-                    `), 'ASC']
-                ],
-                logging: console.log
-            })
-            return data;
-        } catch (err: any) {
-            console.error("Error in coinsJoinCoinPriceInFiatJoinChangellyJoinWallet>>", err)
-            await commonHelper.save_error_logs("coinsJoinCoinPriceInFiatJoinChangellyJoinWallet", err.message);
-            return null;
-        }
-    }
+  
     public async coinsJoinCoinPriceInFiatJoinChangellyOnOffRampJoinWallet(
         attr1: any, where1: any, attr2: any, where2: any, attr3: any, where3: any, attr4: any, where4: any) {
         try {
@@ -254,6 +197,65 @@ class CoinQueries {
         }
     }
 
+    public async coinsJoinCoinPriceInFiatJoinChangellyJoinWallet(
+        attr1: any, where1: any, attr2: any, where2: any, attr3: any, where3: any, attr4: any, where4: any) {
+        try {
+            let data: any = await Models.CoinsModel.findAll({
+                attributes: attr1,
+                where: where1,
+                include: [{
+                    model: Models.CoinPriceInFiatModel,
+                    as: "fiat_price_data",
+                    attributes: attr2,
+                    where: where2,
+                    required: false
+                }, {
+                    model: Models.ChangellySupportedCrossChainCoinsModel,
+                    attributes: attr3,
+                    where: where3,
+                    required: true,
+                    as: "coins_changelly_rel"
+                }, {
+                    model: Models.WalletModel,
+                    attributes: attr4,
+                    where: where4,
+                    required: false,
+                    as: "wallet_data",
+                },{
+                    model:Models.CoinsModel,
+                    attributes:['coin_id', 'coin_symbol', 'is_token'],
+                    where:{is_token:0},
+                    required:true,
+                    as:'native_coins_data',
+                    include: [{
+                        model: Models.CoinPriceInFiatModel,
+                        as: "fiat_price_data",
+                        attributes: attr2,
+                        where: where2,
+                        required: false
+                    }]
+                }],
+                order: [
+                    [Sequelize.literal(`
+                    CASE
+                    WHEN coins.coin_symbol ='bnb' THEN 1
+                    WHEN coins.coin_symbol ='eth' THEN 2
+                    WHEN coins.coin_symbol ='btc' THEN 3
+                    WHEN coins.coin_symbol ='trx' THEN 4
+                    ELSE 5
+                    END
+                    `), 'ASC']
+                ],
+                logging: console.log
+            })
+            return data;
+        } catch (err: any) {
+            console.error("Error in coinsJoinCoinPriceInFiatJoinChangellyJoinWallet>>", err)
+            await commonHelper.save_error_logs("coinsJoinCoinPriceInFiatJoinChangellyJoinWallet", err.message);
+            return null;
+        }
+    }
+
     public async coinsJoinCoinPriceInFiatJoinRocketxJoinWallet(
         attr1: any, where1: any, attr2: any, where2: any, attr3: any, where3: any, attr4: any, where4: any) {
         try {
@@ -303,6 +305,80 @@ class CoinQueries {
                     END
                     `), 'ASC']
                 ],
+                logging: console.log
+            })
+            return data;
+        } catch (err: any) {
+            console.error("Error in coinsJoinCoinPriceInFiatJoinChangellyJoinWallet>>", err)
+            await commonHelper.save_error_logs("coinsJoinCoinPriceInFiatJoinChangellyJoinWallet", err.message);
+            return null;
+        }
+    }
+
+    public async coinsJoinCoinPriceInFiatJoinChangellyJoinWallet_newOne(
+        attr1: any, where1: any, attr2: any, where2: any, attr3: any, where3: any, attr4: any, where4: any, attr5: any, where5: any,limitNo: any,offset: any,walletRequred :any) {
+        try {
+            console.log("-----walletRequred-----",walletRequred)
+            let data: any = await Models.CoinsModel.findAndCountAll({
+                attributes: attr1,
+                where: where1,
+                include: [{
+                    //  -- Join fiat price for main coin //
+                    model: Models.CoinPriceInFiatModel,
+                    as: "fiat_price_data",
+                    attributes: attr2,
+                    where: where2,
+                    required: false
+                }, {
+                    // -- Join Changelly data //
+                    model: Models.ChangellySupportedCrossChainCoinsModel,
+                    attributes: attr3,
+                    where: where3,
+                    required: true,
+                    as: "coins_changelly_rel"
+                }, 
+                {
+                    //  -- Join RocketX data //
+                    model: Models.RocketxSupportedCoinsModel,
+                    attributes: attr4,
+                    where: where4,
+                    required: true,
+                    as: "coins_rocketx_rel"
+                }, {
+                    //  -- Join wallet info //
+                    model: Models.WalletModel,
+                    attributes: attr5,
+                    where: where5,
+                    required: walletRequred,
+                    as: "wallet_data",
+                },{
+                    // -- Join native coin info //
+                    model:Models.CoinsModel,
+                    attributes:['coin_id', 'coin_symbol', 'is_token'],
+                    where:{is_token:0},
+                    required:true,
+                    as:'native_coins_data',
+                    include: [{
+                        model: Models.CoinPriceInFiatModel,
+                        as: "fiat_price_data",
+                        attributes: attr2,
+                        where: where2,
+                        required: false
+                    }]
+                }],
+                order: [
+                    [Sequelize.literal(`
+                    CASE
+                    WHEN coins.coin_symbol ='bnb' THEN 1
+                    WHEN coins.coin_symbol ='eth' THEN 2
+                    WHEN coins.coin_symbol ='btc' THEN 3
+                    WHEN coins.coin_symbol ='trx' THEN 4
+                    ELSE 5
+                    END
+                    `), 'ASC']
+                ],
+                limit: limitNo,
+                offset: offset,
                 logging: console.log
             })
             return data;

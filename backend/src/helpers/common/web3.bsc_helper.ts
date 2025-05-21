@@ -82,11 +82,14 @@ class BSCWeb3 {
     }
     public async get_coin_balance(address: string, inBsc: boolean) {
         try {
+            console.log("---get_coin_balance---",address)
             let balanceInWei = await this.web3.eth.getBalance(address);
             if (inBsc == true) {
                 let balanceInBsc = this.web3.utils.fromWei(balanceInWei, "ether");
                 return balanceInBsc;
             }
+            console.log("---get_coin_balance---",balanceInWei)
+
             return balanceInWei;
         } catch (err: any) {
             console.log("get_coin_balance _bsc", err);
@@ -94,27 +97,6 @@ class BSCWeb3 {
             throw err;
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     // Used in bsc 
     public async getBep20TokenTransferGasEstimationCost(
@@ -137,8 +119,12 @@ class BSCWeb3 {
                 }
                 tokenValue = exponentialToDecimal(tokenValue as number);
                 let gasLimit = await contract.methods.transfer(toAddress, tokenValue).estimateGas({ from: fromAdress });
+                console.log("gasLimit =''''======",gasLimit)
+
                 gasLimit = gasLimit * 2;
                 gasLimit == 0 ? 60000 : Math.floor(parseFloat(gasLimit.toString()));
+                console.log("gasLimit ========",gasLimit)
+
                 return gasLimit;
             }
             return 60000;
@@ -150,6 +136,8 @@ class BSCWeb3 {
     }
     public async getBscGasLimit(from: string, to: string) {
         try {
+            console.log("------",from,to)
+
             let amount: any = await this.get_coin_balance(from, true);
             let amountWei: any = this.web3.utils.toWei(amount.toString(), "ether");
             let amountHex: any = this.web3.utils.toHex(amountWei);
@@ -175,7 +163,38 @@ class BSCWeb3 {
         }
     }
 
+    public async get_confirmed_trnx(tx_id: string) {
+        try {
+            console.log("transaction id bsc>>>", tx_id)
+            const { getTransaction, getTransactionReceipt } = this.web3.eth;
+            let transaction: any = await getTransaction(tx_id);
+            let transactionReceipt: any = await getTransactionReceipt(tx_id);
+            if (transaction.blockNumber) {
+                console.log("bsc transaction.blockNumber")
+                if (transactionReceipt) {
+                    if (transactionReceipt.status && transaction.blockHash != null) {
+                        console.log("transactionReceipt.status && transaction.blockHash != null>>>")
+                        return { status: true }
 
+                    } else {
+                        console.log(" not transactionReceipt.status && transaction.blockHash != null>>>")
+                        return { status: false }
+                    }
+
+                } else {
+                    console.log("bsc transaction receipt not found")
+                    return { status: false }
+                }
+            } else {
+                console.log("bsc no transaction.blockNumber")
+                return { status: false }
+            }
+        } catch (err: any) {
+            console.error("err bsc_get_confirmed_trnx", err)
+            await commonHelper.save_error_logs("err bsc_get_confirmed_trnx", err.message);
+            return { status: false }
+        }
+    }
 
 };
 

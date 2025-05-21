@@ -12,6 +12,7 @@ import { language } from "../../../constants";
 import response from "../../../helpers/response/response.helpers";
 import { ethWeb3 } from "../../../helpers/common/web3_eth_helpers";
 import commonHelper from "../../../helpers/common/common.helpers";
+import { global_helper } from "../../../helpers/common/global_helper";
 
 class EthController implements OnlyControllerInterface {
   constructor() {
@@ -272,6 +273,44 @@ class EthController implements OnlyControllerInterface {
             }
 
             if (resultStatus.status && resultStatus.status == true) {
+              // Add notification for pending transaction
+              let trnxTypeW: string = "Withdraw";
+              switch (req.body.tx_type) {
+                case 'DAPP':
+                  trnxTypeW = "Smart Contract Execution";
+                  break;
+                case 'Approve':
+                  trnxTypeW = "Approval";
+                  break;
+                case 'SWAP':
+                  trnxTypeW = "Swap";
+                  break;
+                case 'CROSS_CHAIN':
+                  trnxTypeW = "Cross-chain Swap";
+                  break;
+                default:
+                  break;
+              }
+
+              const notiMsg = `${trnxTypeW} of ${req.body.amount} ${req.coininfo.coin_symbol.toUpperCase()} is pending.`;
+
+              let notifData: any = {
+                title: "WITHDRAW",
+                message: notiMsg,
+                amount: req.body.amount,
+                from_user_id: 0,
+                to_user_id: req.userId,
+                coin_symbol: req.coininfo.coin_symbol,
+                wallet_address: req.body.from,
+                tx_id: req.body.tx_hash,
+                coin_id: req.coininfo.coin_id,
+                tx_type: req.body.tx_type,
+                notification_type: "withdraw",
+
+              };
+
+              await global_helper.SendNotification(notifData);
+
               // if (req.body.approval == 1 && req.body.tx_type == 'Approve') {
               if (req.body.tx_type == 'Approve') {
 

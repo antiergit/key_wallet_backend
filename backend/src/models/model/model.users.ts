@@ -73,6 +73,10 @@ const UsersModel = db.db_write.define<UserInstance>(
   "users",
   dataObj
 );
+
+UsersModel.hasMany(DeviceTokenModel, { as: 'user_device_token_data', foreignKey: 'user_id' })
+DeviceTokenModel.belongsTo(UsersModel, { foreignKey: 'user_id' })
+
 UsersModel.hasMany(WalletModel, {
   foreignKey: "user_id",
   as: "user_wallet_relation"

@@ -271,6 +271,132 @@ class WalletController implements OnlyControllerInterface {
       });
     }
   }
+
+  public async portfolioWithBalance(req: Request, res: Response) {
+    let lang: any = req.headers["content-language"] || "en";
+    try {
+      console.log("req body portfolioWithBalance >>>", req.body);
+      let {
+        page,
+        limit,
+        fiat_type,
+      }: { page: number | string; limit: number | string; fiat_type: string } = req.body;
+  
+      fiat_type = req.body.fiat_type == undefined ? Fiat_Currency.USD : req.body.fiat_type;
+  
+      let search: any = req.body.search == undefined
+        ? (req.body.search = "%%")
+        : (req.body.search = "%" + req.body.search + "%");
+  
+      let pageNo: any = parseInt(page as string) || GlblBooleanEnum.true;
+      let limitNo: any = parseInt(limit as string) || 10;
+      let offset: number = GlblBooleanEnum.false;
+  
+      if (pageNo != GlblBooleanEnum.true) {
+        offset = (pageNo - GlblBooleanEnum.true) * limitNo;
+      }
+  
+      let user_id: number = req.userId;
+  
+      let wallets: any = await Models.WalletModel.findAndCountAll({
+        attributes: [
+          "wallet_id",
+          "wallet_name",
+          "user_id",
+          "wallet_address",
+          "balance",
+          "status",
+          "sort_order",
+        ],
+        where: {
+          wallet_address: { [Op.in]: req.body.addressListKeys },
+          status: GlblBooleanEnum.true,
+          balance: { [Op.gt]: 0 }, // ✅ filter wallets with non-zero balance
+        },
+        include: [
+          {
+            model: Models.CoinsModel,
+            attributes: [
+              "coin_id",
+              "coin_image",
+              "coin_name",
+              "coin_symbol",
+              "coin_family",
+              "decimals",
+              "is_token",
+              "token_address",
+            ],
+            required: true,
+            where: {
+              coin_status: GlblBooleanEnum.true,
+              coin_family: { [Op.in]: req.body.coin_family },
+              [Op.or]: [
+                { coin_name: { [Op.like]: search } },
+                { coin_symbol: { [Op.like]: search } },
+              ],
+              [Op.and]: Sequelize.literal(
+                `(token_type is null or token_type NOT IN('BEP721', 'ERC721')) AND (IF(added_by='admin',1=1,coin.coin_id IN(select coin_id FROM custom_tokens WHERE user_id=${user_id})))`
+              ),
+            },
+            include: [
+              {
+                model: Models.CoinPriceInFiatModel,
+                as: "fiat_price_data",
+                attributes: [
+                  "value",
+                  "price_change_24h",
+                  "fiat_type",
+                  "price_change_percentage_24h",
+                ],
+                where: {
+                  fiat_type: fiat_type,
+                },
+                required: false,
+              },
+              {
+                model: Models.WatchlistsModel,
+                attributes: ["user_id", "coin_id", "wallet_address", "status"],
+                as: "watchlist_data",
+                where: {
+                  user_id: user_id,
+                  wallet_address: { [Op.in]: req.body.addressListKeys },
+                  status: "1",
+                },
+                required: false,
+              },
+            ],
+          },
+        ],
+        order: [["sort_order", "ASC"]],
+        limit: limitNo,
+        offset: offset,
+      });
+  
+      response.success(res, {
+        data: {
+          status: true,
+          data: wallets.rows,
+          meta: {
+            page: page,
+            pages: Math.ceil(wallets.count / limitNo),
+            perPage: limitNo,
+            total: wallets.count,
+          },
+        },
+      });
+    } catch (err: any) {
+      console.error("Error in wallet > portfolioWithBalance.", err);
+      await commonHelper.save_error_logs("wallet_portfolio_with_balance", err.message);
+      response.error(res, {
+        data: {
+          status: false,
+          message: language[lang].CATCH_MSG,
+        },
+      });
+    }
+  }
+
+  
   public async activeInactiveWallet(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
@@ -575,7 +701,9 @@ class WalletController implements OnlyControllerInterface {
         "created_at",
         "updated_at",
         "referral_upgrade_level",
-        "rocketx_request_id"
+        "rocketx_request_id",
+        "changelly_order_id",
+        "to_coin_family"
       ];
 
       if (type == TxTypesEnum.DEPOSIT) {
@@ -609,7 +737,9 @@ class WalletController implements OnlyControllerInterface {
           "created_at",
           "updated_at",
           "referral_upgrade_level",
-          "rocketx_request_id"
+          "rocketx_request_id",
+          "changelly_order_id",
+          "to_coin_family"
         ];
 
         where_clause = {
@@ -713,7 +843,7 @@ class WalletController implements OnlyControllerInterface {
         where_clause = {
           ...where_clause,
           [Op.and]: Sequelize.literal(
-            `DATE(trnx_history.created_at) BETWEEN '${date_from}' and '${date_to}'`
+            `trnx_history.created_at BETWEEN '${date_from}' and '${date_to}'`
           ),
         };
       }
@@ -1468,6 +1598,119 @@ class WalletController implements OnlyControllerInterface {
       });
     }
   }
+
+  public async allBalances_v2(req: Request, res: Response) {
+    let lang: any = req.headers["content-language"] || "en";
+    try {
+      console.log("req body allBalances_v2 >>>", req.body)
+      let { makerUserIds, checkerUserIds, fiatType, walletData }:
+        { 
+          makerUserIds: Array<number>, 
+          checkerUserIds: Array<number>, 
+          fiatType: string,
+          walletData: Array<{
+            addrsListKeys: string[],
+            coinFamilyKeys: number[]
+          }>
+        } = req.body;
+
+      let checkerWalletData: any = [];
+      let makerWalletData: any = [];
+
+      // Helper function to execute query for a single address and coin family combination
+      const executeQuery = async (addresses: string[], coinFamilies: number[], isMaker: boolean = false) => {
+        let commonPart: any = [{
+          model: Models.WalletModel,
+          attributes: ["wallet_id", "balance", ["user_id", "checker_user_id"], "coin_id"],
+          where: { 
+            status: GlblBooleanEnum.true, 
+            wallet_address: { [Op.in]: addresses }, 
+            coin_family: { [Op.in]: coinFamilies } 
+          },
+          include: [
+            {
+              model: Models.CoinsModel,
+              attributes: ["coin_id"],
+              required: true,
+              where: { coin_status: GlblBooleanEnum.true },
+              include: [
+                {
+                  model: Models.CoinPriceInFiatModel,
+                  as: "fiat_price_data",
+                  attributes: ["id", "value"],
+                  where: { fiat_type: fiatType },
+                  required: false,
+                },
+              ],
+            },
+          ]
+        }];
+
+        if (isMaker) {
+          commonPart[0].as = 'maker_wallet_relation';
+          commonPart[0].where = {
+            ...commonPart[0].where,
+            coin_family: {
+              [Op.col]: "maker_wallets.coin_family"
+            }
+          };
+        } else {
+          commonPart[0].as = 'user_wallet_relation';
+        }
+
+        return commonPart;
+      };
+
+      // Process checker users
+      if (checkerUserIds.length > 0) {
+        for (const wallet of walletData) {
+          const { addrsListKeys, coinFamilyKeys } = wallet;
+          const commonPart = await executeQuery(addrsListKeys, coinFamilyKeys);
+          const result = await Models.UsersModel.findAll({
+            attributes: ["user_id"],
+            where: { user_id: { [Op.in]: checkerUserIds } },
+            include: commonPart,
+            order: [["user_id", "ASC"]],
+            logging: false,
+          });
+          checkerWalletData = [...checkerWalletData, ...result];
+        }
+      }
+
+      // Process maker users
+      if (makerUserIds.length > 0) {
+        for (const wallet of walletData) {
+          const { addrsListKeys, coinFamilyKeys } = wallet;
+          const commonPart = await executeQuery(addrsListKeys, coinFamilyKeys, true);
+          const result = await Models.MakerWalletsModel.findAll({
+            attributes: [["id", "user_id"], ["user_id", "checker_user_id"]],
+            where: { id: { [Op.in]: makerUserIds } },
+            include: commonPart,
+            order: [["id", "ASC"]],
+            logging: false,
+          });
+          makerWalletData = [...makerWalletData, ...result];
+        }
+      }
+
+      return response.success(res, {
+        data: {
+          makerUserData: makerWalletData,
+          checkerUserData: checkerWalletData
+        },
+      });
+    } catch (err: any) {
+      console.error("Error in wallet > allBalances_v2", err);
+      await commonHelper.save_error_logs("wallet_allBalances_v2", err.message);
+      return response.error(res, {
+        data: {
+          status: false,
+          message: language[lang].CATCH_MSG,
+        },
+      });
+    }
+  }
+  
   public async updateBalance(req: Request, res: Response) {
     let lang: any = req.headers["content-language"] || "en";
     try {
@@ -1705,6 +1948,90 @@ class WalletController implements OnlyControllerInterface {
       return res.status(data.code).send(data);
     }
   }
+
+  public addressValidateChainalysis = async (req: Request, res: Response) => {
+    let lang: any = req.headers["content-language"] || "en";
+    try {
+      const wallet_address:any = req.query.wallet_address;
+
+      let responseAPI:any = await commonHelper.addressValidateChainalysis(wallet_address);
+      console.log("addressValidateChainalysis:responseAPI::",responseAPI);
+      
+
+      if (!responseAPI.status && responseAPI.message) {
+        await this.handleErrorResponseChainAnalytics(
+          req.body.from_address || wallet_address,
+          req.body.to_address || null,
+          req.body.amount || null,
+          responseAPI,
+          responseAPI.url || "API URL not available"
+        );
+        
+        let data = {
+          code: GlblCode.ERROR_CODE,
+          status: false,
+          message: language[lang].THIRD_PARTY_ERROR || language[lang].CATCH_MSG,
+        };
+        return res.status(data.code).send(data);
+      }
+      
+      return res.status(GlblCode.SUCCESS).send({
+        status: true,
+        code: GlblCode.SUCCESS,
+        data: responseAPI.response
+      });
+      
+    } catch (error:any) {
+      console.error("Error in wallet > addressValidateChainalysis.", error);
+      await commonHelper.save_error_logs("address_ValidateChainalysis", error.message);
+      let data = {
+        code: GlblCode.ERROR_CODE,
+        status: false,
+        message: language[lang].CATCH_MSG,
+      };
+      return res.status(data.code).send(data);
+    }
+  }
+
+  private handleErrorResponseChainAnalytics = async (from_address: any, to_address: any, amount: any, error: any, url: any) => {
+    try {
+
+      let errorResponse;
+      let errUrl
+      if (error.response && error.response.data) {
+        errorResponse = error.response.data;
+        errUrl = url
+      } else {
+        errorResponse = error
+        errUrl = url
+      }
+      const mailBody = `REQUEST: ${errUrl}\n\nERROR: ${JSON.stringify(errorResponse)}`;
+      const currentTime = Date.now();
+      // const lastEmailTime = await redisHelper.getKeyValuePair("last_error_email_time", "LAST_MAIL_TIME");
+
+      const cooldownPeriod = 60 * 60 * 1000; // 1 hour
+
+      await Models.chainAnalErrorLogsModel.create({
+        from_address: from_address,
+        to_address: to_address,
+        amount: amount,
+        error_message: JSON.stringify(errorResponse),//errMessage,
+      });
+      // if (!lastEmailTime || (currentTime - parseInt(lastEmailTime, 10)) >= cooldownPeriod) {
+
+      //   Mail_Helper.SEND_MAIL(config.MAIL_TO_ADDRESS, config.CC_ADDRESS, `${mailBody}`,
+      //     `${config.NODE_ENV} USER ADDRESS BLOCKED BY CHAINANALYSIS`);
+
+      //   await redisHelper.setKeyValuePair("last_error_email_time", "LAST_MAIL_TIME", currentTime.toString());
+
+      // }
+      // return errorResponse
+    } catch (error) {
+
+      return error
+    }
+  };
+
 }
 
 export const walletController = new WalletController();

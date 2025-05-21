@@ -70,7 +70,16 @@ class UserRoute implements ControllerInterface {
     this.router.post(`${this.path}/wallet_balance`,
       jwtVerification.verifyToken,
       userController.getWalletBalance);
+
+    this.router.post(`${this.path}/get_transaction_status`,
+      jwtVerification.verifyToken,
+      userController.getTransactionStatus);
+
+      this.router.post(`${this.path}/get_balnce_of_tokens`,
+        jwtVerification.verifyToken,
+        userController.get_balnce_of_tokens);      
   }
 }
+
 
 export default UserRoute;
